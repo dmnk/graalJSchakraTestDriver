@@ -1,19 +1,25 @@
 package org.dmnk.graalJSchakraTD.test;
 
-public class chakraTestRunner {
+import org.dmnk.graalJSchakraTD.interfaces.ResultExporter;
+
+public class ChakraTestRunner {
 	private String graalPath;
 	private String chakraPath;
 	private ResultExporter resExp;
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		ChakraTestRunner ctr = new ChakraTestRunner();
+		ResultExporter hre = new HTMLResultExporter();
 		
-		chakraTestRunner ctr = new chakraTestRunner();
 		ctr.setGraalPath("./../bin/js");
 		ctr.setChakraPath("./chakraTests/test");
-		
-		ctr.run();
-		ctr.setResultExporter(new BootstrappedHTMLExporter());
+
+		ctr.setResultExporter(hre);
+		ctr.run(args);
+	}
+	
+	private void setResultExporter(ResultExporter re) {
+		this.resExp = re;
 	}
 
 	private String getGraalPath() {
@@ -32,8 +38,11 @@ public class chakraTestRunner {
 		this.chakraPath = chakraPath;
 	}
 
-	private void run() {
-		
+	private void run(String[] args) {
+		//get available tests from filesystem
+		//process white/blacklists
+		//execute the enabled tests
+		//export the result
 	}
 	
 }
