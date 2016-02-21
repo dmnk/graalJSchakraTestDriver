@@ -1,0 +1,16 @@
+.code {
+	height: 200px; 
+	overflow-y: scroll;
+	padding: 0;
+}
+
+.panel-group:last-child {
+	margin-bottom: 0;
+}
+/* .panel-group { */
+/* 	margin-bottom: 0; */
+/* } */
+
+.line-numbers {
+	margin: 0 !important;
+}
