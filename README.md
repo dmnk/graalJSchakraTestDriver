@@ -4,6 +4,7 @@ Will include a human readable / formatted html result output.
 Right now it looks like the test-driver will be available to execute arbitrary test if you exchange the 
 
 ## status
+**the checked items of this task list aren't displayed as checked in Firefox 44**
 - [x] checkout of (just) the chakra tests
 - [x] mockup of the [test-result HTML](https://rawgit.com/dmnk/graalJSchakraTestDriver/master/data/resultExample.html)
   - features
