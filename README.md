@@ -13,6 +13,8 @@ Right now it looks like the test-driver will be available to execute arbitrary t
     - syntax & line-number highlightning for the test and diff files [prism.js](http://prismjs.com/download.html)
 - [x] use github ;-)
 - [ ] fetching the tests in provided base-directory
+	- ok for one directory (if just testing a sub-category)
+	- open for the whole test-directory  
 - [ ] in/excluding tests based on white/blacklists
 - [ ] excluding tests known to crash the VM based on a additional "crashlist"
 - [ ] executing the tests
