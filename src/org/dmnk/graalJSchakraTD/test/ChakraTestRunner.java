@@ -6,10 +6,12 @@ public class ChakraTestRunner {
 	private String graalPath;
 	private String chakraPath;
 	private ResultExporter resExp;
+	private TestInitiator testInit;
 
 	public static void main(String[] args) {
 		ChakraTestRunner ctr = new ChakraTestRunner();
 		ResultExporter hre = new HTMLResultExporter();
+		TestInitiator ti = new TestInitiator();
 		
 		ctr.setGraalPath("./../bin/js");
 		ctr.setChakraPath("./chakraTests/test");
