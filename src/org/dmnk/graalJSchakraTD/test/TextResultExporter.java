@@ -39,6 +39,6 @@ public class TextResultExporter implements ResultExporter {
 	}
 	
 	private void exportTest(Test t) {
-		this.exportTXT.append(t.getFilename()+ ", "+ t.getFailed()? "failed" : "passed");
+		this.exportTXT.append(t.getFilename()+ ", "+ (t.getFailed()? "failed" : "passed"));
 	}
 }
