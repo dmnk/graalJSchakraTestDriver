@@ -22,12 +22,12 @@ public class GraalJSTest implements org.dmnk.graalJSchakraTD.interfaces.Test {
 
 	@Override
 	public String getFilename() {
-		return this.testName.concat(".js");
+		return this.testName; //.concat(".js");
 	}
 
 	public String getBaseline() {
 		//TODO if file exists
-		return this.testName.concat(".baseline");
+		return this.testName.substring(-3).concat(".baseline");
 	}
 
 	@Override
