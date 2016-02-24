@@ -4,12 +4,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.dmnk.graalJSchakraTD.interfaces.Test;
+import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 
-public class TestGroup implements org.dmnk.graalJSchakraTD.interfaces.TestGroup {
+public class GraalJSTestGroup implements TestGroup {
 	protected List<Test> testList;
 	private String groupName;
 	
-	public TestGroup (String name) {
+	public GraalJSTestGroup (String name) {
 		this.groupName = name;
 		this.testList = new LinkedList<Test>();
 	}

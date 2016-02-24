@@ -15,6 +15,8 @@ public interface Test {
 	
 	public int getReturncode();
 	
+	public boolean getFailed();
+	
 	/**
 	 * 
 	 * @return true if the test was executed

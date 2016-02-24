@@ -8,7 +8,7 @@ import org.dmnk.graalJSchakraTD.interfaces.TestInitiator;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 
-public class ChakraTestRunner {
+public class GraalJSTestRunner {
 	private String graalPath;
 	private String chakraPath;
 	private List<ResultExporter> resExp;
@@ -17,10 +17,10 @@ public class ChakraTestRunner {
 	private TestInitiator testInit;
 
 	public static void main(String[] args) {
-		ChakraTestRunner ctr = new ChakraTestRunner();
+		GraalJSTestRunner ctr = new GraalJSTestRunner();
 		ResultExporter hre = new HTMLResultExporter("htmlResult.html");
-		ResultExporter tre = new TextResultExporter();
-		TestInitiator ti = new TestInitiator();
+		ResultExporter tre = new TextResultExporter("FailPass.csv");
+		TestInitiator ti = new GraalJSTestInitiator();
 		
 		ctr.setGraalPath("./../bin/js");
 		ctr.setChakraPath("./chakraTests/test");
@@ -31,7 +31,7 @@ public class ChakraTestRunner {
 		ctr.run(args);
 	}
 	
-	private ChakraTestRunner() {
+	private GraalJSTestRunner() {
 		this.resExp = new LinkedList<ResultExporter>();
 	}
 	
@@ -65,7 +65,7 @@ public class ChakraTestRunner {
 		//execute the enabled tests
 		
 		for(TestGroup tg : this.tests) {
-			TestGroup etg = new TestGroup(tg.getGroupName());
+			TestGroup etg = new GraalJSTestGroup(tg.getGroupName());
 			this.executedTests.add(etg);
 			for(Test t : tg.getTests()) {
 				etg.addTest(this.testInit.runTest(t, this.chakraPath));

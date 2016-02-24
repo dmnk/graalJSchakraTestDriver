@@ -4,9 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.dmnk.graalJSchakraTD.interfaces.Test;
-import org.dmnk.graalJSchakraTD.test.TestGroup;
+import org.dmnk.graalJSchakraTD.test.GraalJSTestGroup;
 
-public class TestExecutedGroup extends TestGroup {
+public class TestExecutedGroup extends GraalJSTestGroup {
 	private int passed =0, fail=0, warn=0, exception=0, crash=0, assertion=0, excluded=0;
 	
 	public TestExecutedGroup (String name) {

@@ -2,14 +2,15 @@ package org.dmnk.graalJSchakraTD.test;
 
 import org.dmnk.graalJSchakraTD.enums.FailReason;
 
-public class Test implements org.dmnk.graalJSchakraTD.interfaces.Test {
+public class GraalJSTest implements org.dmnk.graalJSchakraTD.interfaces.Test {
 	private FailReason fr;
 	private String testName;
 	private int retCode;
 	private boolean executed;
+	private boolean failed;
 	private String output;
 	
-	public Test(String testname) {
+	public GraalJSTest(String testname) {
 		this.testName = testname;
 		this.executed = false;
 	}
@@ -50,6 +51,10 @@ public class Test implements org.dmnk.graalJSchakraTD.interfaces.Test {
 	
 	public String getOutput () {
 		return this.output;
+	}
+	
+	public boolean getFailed() {
+		return this.failed;
 	}
 
 }
