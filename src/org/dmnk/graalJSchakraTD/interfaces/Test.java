@@ -7,6 +7,12 @@ public interface Test {
 	
 	public String getFilename();
 	
+	/**
+	 * 
+	 * @return if Baseline File exists, the Filename
+	 */
+	public String getBaseline();
+	
 	public int getReturncode();
 	
 	/**
