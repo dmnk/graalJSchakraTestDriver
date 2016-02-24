@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface ResultExporter {
 	public void setExportPath(String path);
-	public void export(List<TestGroup> tests);
+	public void export(List<TestGroup> executedTests);
 }

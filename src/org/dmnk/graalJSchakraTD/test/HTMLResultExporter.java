@@ -35,6 +35,9 @@ public class HTMLResultExporter implements ResultExporter {
 	private static String phTestGroup = "%%GROUPNAME%%";
 	private static String phTestName = "%%TESTNAME%%";
 	
+	public HTMLResultExporter(String path) {
+		this.exportPath = path;
+	}
 	
 	@Override
 	public void setExportPath(String path) {
