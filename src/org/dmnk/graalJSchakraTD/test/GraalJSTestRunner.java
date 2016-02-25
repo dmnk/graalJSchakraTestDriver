@@ -1,7 +1,5 @@
 package org.dmnk.graalJSchakraTD.test;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,12 +61,14 @@ public class GraalJSTestRunner {
 	}
 
 	private void run(String[] args) {
+
+		//get available tests from filesystem
 		GraalJSTestFetcher gjtf = new GraalJSTestFetcher();
 		this.tests = gjtf.fetchFromDir(this.chakraPath);
-		//get available tests from filesystem
-		//process white/blacklists
-		//execute the enabled tests
 		
+		//process white/blacklists
+		
+		//execute the enabled tests
 		for(TestGroup tg : this.tests) {
 			TestGroup etg = new GraalJSTestGroup(tg.getGroupName());
 			this.executedTests.add(etg);

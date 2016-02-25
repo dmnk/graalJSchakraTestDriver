@@ -1,5 +1,8 @@
 package org.dmnk.graalJSchakraTD.test;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.dmnk.graalJSchakraTD.interfaces.ResultExporter;
@@ -28,10 +31,9 @@ public class TextResultExporter implements ResultExporter {
 			for(Test test : group.getTests()) {
 				exportTest(test);
 			}
-			//addGroupFooter();
 		}
 		
-		//TODO: writeResult();
+		writeResult();
 	}
 
 	private void addTXTHeader() {
@@ -40,5 +42,17 @@ public class TextResultExporter implements ResultExporter {
 	
 	private void exportTest(Test t) {
 		this.exportTXT.append(t.getFilename()+ ", "+ (t.getFailed()? "failed" : "passed"));
+	}
+	
+	private void writeResult() {
+		try {
+			PrintWriter pw = new PrintWriter(this.exportPath, "UTF-8");
+			pw.print(this.exportTXT);
+			pw.close();
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

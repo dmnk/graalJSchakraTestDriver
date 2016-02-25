@@ -7,7 +7,6 @@ import java.util.List;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 import org.dmnk.graalJSchakraTD.test.GraalJSTestFetcher;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class GraalJSTestFetcherTestAllDirs {
@@ -23,7 +22,7 @@ public class GraalJSTestFetcherTestAllDirs {
 	public void TGCreation() {
 		String tgName = tg.get(0).getGroupName();
 		
-		if(!tgName.equals("Array")) {
+		if(!tgName.equals("ASMJSParser")) {
 			fail("First Testgroup has wrong name: " + tgName);
 		}
 	}
@@ -33,6 +32,15 @@ public class GraalJSTestFetcherTestAllDirs {
 		
 		if(tg.isEmpty()) {
 			fail("No Testgroup created");
+		}
+	}
+	
+
+	@Test
+	public void TGallGroups() {
+		
+		if(tg.size() != 60) {
+			fail("Incorrect amount of TestGroups: " + tg.size());
 		}
 	}
 
@@ -53,7 +61,7 @@ public class GraalJSTestFetcherTestAllDirs {
 	@Test
 	public void TGtestnameOK() {
 		String testName = tg.get(0).getTests().get(0).getFilename();
-		if(!testName.equals("ArrayBtreeBadCodeGen.js")) {
+		if(!testName.equals("UnaryPos.js")) {
 			fail("First Test in Testgroup has wrong name: " + testName);
 		}
 	}
