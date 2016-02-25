@@ -15,7 +15,8 @@ public class GraalJSTestFetcherTestAllDirs {
 	
 	@Before
 	public void setUp() {
-		tg = GraalJSTestFetcher.fetchFromDir("../../GraalVM-0.10/chakraTests/test/");
+		GraalJSTestFetcher gjtf = new GraalJSTestFetcher();
+		tg = gjtf.fetchFromDir("../../GraalVM-0.10/chakraTests/test/");
 	}
 	
 	@Test

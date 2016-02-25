@@ -63,7 +63,8 @@ public class GraalJSTestRunner {
 	}
 
 	private void run(String[] args) {
-		this.tests = GraalJSTestFetcher.fetchFromDir(this.chakraPath);
+		GraalJSTestFetcher gjtf = new GraalJSTestFetcher();
+		this.tests = gjtf.fetchFromDir(this.chakraPath);
 		//get available tests from filesystem
 		//process white/blacklists
 		//execute the enabled tests
