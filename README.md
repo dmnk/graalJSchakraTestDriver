@@ -4,7 +4,6 @@ Will include a human readable / formatted html result output.
 Right now it looks like the test-driver will be available to execute arbitrary test if you exchange the 
 
 ## status
-**the checked items of this task list aren't displayed as checked in Firefox 44**
 - [x] checkout of (just) the chakra tests
 - [x] mockup of the [test-result HTML](https://rawgit.com/dmnk/graalJSchakraTestDriver/master/data/resultExample.html)
   - features
@@ -12,14 +11,13 @@ Right now it looks like the test-driver will be available to execute arbitrary t
     - on-demand loading of the tests / results
     - syntax & line-number highlightning for the test and diff files [prism.js](http://prismjs.com/download.html)
 - [x] use github ;-)
-- [ ] fetching the tests in provided base-directory
-	- ok for one directory (if just testing a sub-category)
-	- open for the whole test-directory  
+- [x] fetching the tests in provided base-directory
 - [ ] in/excluding tests based on white/blacklists
 - [ ] excluding tests known to crash the VM based on a additional "crashlist"
 - [ ] executing the tests
 - [ ] exporting the results
   - different formats (html & fail/pass filename only)
+  - text should be ready
   
 ## get the open-sourced JS tests from ms chakra core project
 ```
