@@ -12,6 +12,8 @@ import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 public class HTMLResultExporter implements ResultExporter {
 	private String exportPath;
 	private StringBuilder exportHTML;
+	private int exportedGroups = 1;
+	private int exportedTests;
 	
 	private final String htmlHeader = 
 			"<!DOCTYPE html>\n"
@@ -33,7 +35,7 @@ public class HTMLResultExporter implements ResultExporter {
 	private final String htmlTestGroupStart =
 			"<div class=\"panel panel-default\">"
 			+"<div class=\"panel-heading\">"
-			+"<a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse1\">"
+			+"<a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse%%GROUPNR%%\">"
         +"<h4 class=\"panel-title\">%%GROUPNAME%%</h4>"
         +"<div class=\"well-sm\">"
         +"<div class=\"progress\">"
@@ -45,7 +47,7 @@ public class HTMLResultExporter implements ResultExporter {
 	      +"</div>"
 	      +"</a>"
     +"</div>"
-   +"<div id=\"collapse1\" class=\"panel-collapse collapse in\">"
+   +"<div id=\"collapse%%GROUPNR%%\" class=\"panel-collapse collapse in\">"
       + "<div class=\"panel-body\">"
       	+"<div class=\"col-md-12\">"
 	          +"<table class=\"table table-bordered\">"
@@ -68,7 +70,7 @@ public class HTMLResultExporter implements ResultExporter {
 	
 	private final String htmlTest =
 			"\t\t<tr class=\"warning\">\n"
-			+ "\t\t\t<td>%%TESTNUMBER%%<span class=\"label label-default\">output</span></td>\n"
+			+ "\t\t\t<td>%%TESTNR%%<span class=\"label label-default\">output</span></td>\n"
 			+ "\t\t\t<td>%%TESTNAME%%</td>"
 			+ "\t\t\t<td class=\"code-container\">";
 //	<div class="panel-group">
@@ -121,6 +123,8 @@ public class HTMLResultExporter implements ResultExporter {
 	//PLACEHOLDER
 	private final String phTestGroup = "%%GROUPNAME%%";
 	private final String phTestName = "%%TESTNAME%%";
+	private final String phTestGroupNr = "%%GROUPNR%%";
+	private final String phTestNr = "%%TESTNR%%";
 	
 	public HTMLResultExporter(String path) {
 		this.exportPath = path;
@@ -138,6 +142,7 @@ public class HTMLResultExporter implements ResultExporter {
 		
 		for (TestGroup group : testlist) {
 			addGroupHeader(group);
+//			this.exportedTests = 0; //reset for every group?
 			for(Test test : group.getTests()) {
 				addTest(test);
 			}
@@ -160,6 +165,7 @@ public class HTMLResultExporter implements ResultExporter {
 	private void addGroupHeader(TestGroup tg) {
 		String tempGroupHeader = this.htmlTestGroupStart;
 		tempGroupHeader = tempGroupHeader.replaceAll(this.phTestGroup, tg.getGroupName());
+		tempGroupHeader = tempGroupHeader.replaceAll(this.phTestGroupNr, ""+this.exportedGroups++);
 		this.exportHTML.append(tempGroupHeader);
 	}
 	
@@ -169,6 +175,7 @@ public class HTMLResultExporter implements ResultExporter {
 	
 	private void addTest(Test t) {
 		String  tempTest = this.htmlTest.replaceAll(this.phTestName, t.getFilename());
+		tempTest = tempTest.replaceAll(this.phTestNr, ""+this.exportedTests++);
 		//TODO: color depending on test status
 		//TODO: Output/output diff
 		this.exportHTML.append(tempTest);
