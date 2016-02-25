@@ -124,6 +124,7 @@ public class HTMLResultExporter implements ResultExporter {
 	
 	public HTMLResultExporter(String path) {
 		this.exportPath = path;
+		this.exportHTML = new StringBuilder();
 	}
 	
 	@Override
