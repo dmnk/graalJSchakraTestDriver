@@ -69,7 +69,7 @@ public class HTMLResultExporter implements ResultExporter {
 			+ "</div>";
 	
 	private final String htmlTest =
-			"\t\t<tr class=\"warning\">\n"
+			"\t\t<tr class=\"%%TESTSTATUS%%\">\n"
 			+ "\t\t\t<td>%%TESTNR%%<span class=\"label label-default\">output</span></td>\n"
 			+ "\t\t\t<td>%%TESTNAME%%</td>"
 			+ "\t\t\t<td class=\"code-container\">";

@@ -18,6 +18,9 @@ Right now it looks like the test-driver will be available to execute arbitrary t
 - [ ] exporting the results
   - different formats (html & fail/pass filename only)
   - text should be ready
+- [x] JUnit tests for
+	- TestFetcher
+	- HTMLResultExporter
   
 ## get the open-sourced JS tests from ms chakra core project
 ```
