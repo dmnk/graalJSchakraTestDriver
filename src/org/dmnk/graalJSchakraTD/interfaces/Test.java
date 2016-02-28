@@ -1,9 +1,8 @@
 package org.dmnk.graalJSchakraTD.interfaces;
 
-import org.dmnk.graalJSchakraTD.enums.FailReason;
+import org.dmnk.graalJSchakraTD.enums.TestType;
 
 public interface Test {
-	public FailReason getFailReason();
 	
 	public String getFilename();
 	
@@ -13,14 +12,6 @@ public interface Test {
 	 */
 	public String getBaseline();
 	
-	public int getReturncode();
-	
-	public boolean getFailed();
-	
-	/**
-	 * 
-	 * @return true if the test was executed
-	 */
-	public boolean executed();
+	public TestType getTestType();
 	
 }

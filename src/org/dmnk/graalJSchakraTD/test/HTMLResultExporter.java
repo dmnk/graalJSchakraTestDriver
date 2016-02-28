@@ -3,8 +3,13 @@ package org.dmnk.graalJSchakraTD.test;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.dmnk.graalJSchakraTD.enums.TestType;
+import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
+import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.ResultExporter;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
@@ -14,6 +19,25 @@ public class HTMLResultExporter implements ResultExporter {
 	private StringBuilder exportHTML;
 	private int exportedGroups = 1;
 	private int exportedTests;
+	
+	/**
+	 * 1: htmlHeader
+	 * 0: tbd: run summary
+	 * 		used parameters
+	 * 		overall statistics
+	 * groupN: 
+	 * 		htmlTestGroupStart {
+	 * 		testN: {
+	 * 			htmlTestBegin
+	 * 			htmlTestCodePanel (js file)
+	 * 			htmlTestCodePanel (diff/output file)
+	 * 			htmlTestCode
+	 * 		}
+	 * 		htmlTestGroupEnd
+	 * }
+	 * 1: htmlFooter 
+	 * 
+	 */
 	
 	private final String htmlHeader = 
 			"<!DOCTYPE html>\n"
@@ -33,8 +57,9 @@ public class HTMLResultExporter implements ResultExporter {
 			+ "\t<div class=\"panel-group\" id=\"accordion\">\n";
 	
 	private final String htmlTestGroupStart =
-			"<div class=\"panel panel-default\">"
-			+"<div class=\"panel-heading\">"
+			"<!-- HTML TEST GROUP START -->\n"
+			+"<div class=\"panel panel-default\">\n"
+			+"<div class=\"panel-heading\">\n"
 			+"<a data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse%%GROUPNR%%\">"
         +"<h4 class=\"panel-title\">%%GROUPNAME%%</h4>"
         +"<div class=\"well-sm\">"
@@ -46,8 +71,8 @@ public class HTMLResultExporter implements ResultExporter {
 	      +"</div>"
 	      +"</div>"
 	      +"</a>"
-    +"</div>"
-   +"<div id=\"collapse%%GROUPNR%%\" class=\"panel-collapse collapse in\">"
+    +"</div>\n"
+   +"<div id=\"collapse%%GROUPNR%%\" class=\"panel-collapse collapse in\">\n"
       + "<div class=\"panel-body\">"
       	+"<div class=\"col-md-12\">"
 	          +"<table class=\"table table-bordered\">"
@@ -57,40 +82,43 @@ public class HTMLResultExporter implements ResultExporter {
 	                +"<th class=\"col-md-1\">Name</th>"
 	                +"<th class=\"col-md-7\">Files</th>"
 	              +"</tr>"
-	            +"</thead>"
-	            +"<tbody>";
+	            +"</thead>\n"
+	            +"<tbody>\n";
 			
 	private final String htmlTestGroupEnd =
-			"\t\t\t</tbody>"
+			"\t\t\t</tbody>\n"
 			+ "\t\t</table>"
 			+ "\t</div>"
 			+ "</div>"
 			+ "</div>"
 			+ "</div>";
 	
-	private final String htmlTest =
-			"\t\t<tr class=\"%%TESTSTATUS%%\">\n"
+	private final String htmlTestBegin =
+			"<!-- HTML TEST BEGIN -->\n"
+			+"\t\t<tr class=\"%%TESTSTATUS%%\">\n"
 			+ "\t\t\t<td>%%TESTNR%%<span class=\"label label-default\">output</span></td>\n"
-			+ "\t\t\t<td>%%TESTNAME%%</td>"
-			+ "\t\t\t<td class=\"code-container\">";
-//	<div class="panel-group">
-//	  <div class="panel panel-default">
-//	    <div class="panel-heading">
-//	      <h4 class="panel-title">
-//	        <a data-toggle="collapse" href="#collapse1_js">arr_bailout.js</a>
-//			<a href="arr_bailout.js" target="_blank">
-//				<span class="glyphicon glyphicon-open-file"></span>
-//			</a>
-//	      </h4>
-//	    </div>
-//	    <div id="collapse1_js" class="panel-collapse collapse">
-//			<div class="panel-body code">
-//              <pre class="line-numbers" data-src="arr_bailout.js" data-line="13,19-22"></pre>
-//              <!--  http://prismjs.com/plugins/line-highlight/#examples  -->
-//			</div>
-//	    </div>
-//	  </div>
-//	</div>
+			+ "\t\t\t<td>%%TESTNAME%%</td>\n"
+			+ "\t\t\t<td class=\"code-container\">\n";
+	
+	private final String htmlTestCodePanel = 
+			"<!-- HTML TEST CODE PANEL: %%FILE_NAME%% -->\n"
+			+"<div class=\"panel-group\">\n"
+			+"<div class=\"panel panel-default\">\n"
+			+"<div class=\"panel-heading\">\n"
+			+"<h4 class=\"panel-title\">\n"
+			+"<a data-toggle=\"collapse\" href=\"#collapse1_js\">%%FILE_NAME%%</a>\n" //TODO: correct the href
+			+"<a href=\"%%FILE_LOCATION%%\" target=\"_blank\">\n"
+			+"<span class=\"glyphicon glyphicon-open-file\"></span>\n"
+			+"</a>\n"
+			+"</h4>\n"
+			+"</div>\n"
+			+"<div id=\"collapse1_js\" class=\"panel-collapse collapse\">\n" //TODO: same id as href above
+			+"<div class=\"panel-body code\">\n"
+			+"<pre class=\"line-numbers\" data-src=\"%%FILE_LOCATION%%\" data-line=\"%%HIGHLIGHT_LINES%%\"></pre>\n"
+			+"</div>\n"
+			+"</div>\n"
+			+"</div>\n"
+			+"</div>\n";
 //	<!-- / SRC -->
 //	<!--  DIFF -->
 //	<div class="panel-group">
@@ -103,14 +131,14 @@ public class HTMLResultExporter implements ResultExporter {
 //	    <div id="collapse1_diff" class="panel-collapse collapse">
 //			<div class="panel-body code">
 //              <pre class="line-numbers" data-src="arr_bailout.diff"></pre>
-//              <!--  http://prismjs.com/plugins/line-highlight/#examples  -->
 //			</div>
 //	    </div>
 //	  </div>
 //	</div>
 //	<!--  / DIFF -->
-//</td>
-//</tr>
+	private final String htmlTestEnd = 
+			"</td>"
+			+"</tr>";
 	
 	private final String htmlFooter =
 			"</div>"
@@ -125,10 +153,20 @@ public class HTMLResultExporter implements ResultExporter {
 	private final String phTestName = "%%TESTNAME%%";
 	private final String phTestGroupNr = "%%GROUPNR%%";
 	private final String phTestNr = "%%TESTNR%%";
+	private final String phFileName = "%%FILE_NAME%%";
+	private final String phStatus = "%%TEST_STATUS%%";
+	private Map<String, String> statusClass;
 	
 	public HTMLResultExporter(String path) {
 		this.exportPath = path;
 		this.exportHTML = new StringBuilder();
+		
+		statusClass = new HashMap<String, String>();
+		statusClass.put("passed", "success");
+		statusClass.put("excluded", "default text-muted");
+		statusClass.put("warning", "info");
+		statusClass.put("crash", "danger");
+		statusClass.put("assert", "warning");
 	}
 	
 	@Override
@@ -174,10 +212,36 @@ public class HTMLResultExporter implements ResultExporter {
 	}
 	
 	private void addTest(Test t) {
-		String  tempTest = this.htmlTest.replaceAll(this.phTestName, t.getFilename());
+		StringBuilder testExport = new StringBuilder();
+		
+		String tempTest = this.htmlTestBegin.replaceAll(this.phTestName, t.getFilename());
 		tempTest = tempTest.replaceAll(this.phTestNr, ""+this.exportedTests++);
 		//TODO: color depending on test status
+		this.exportHTML.append(tempTest);
+		tempTest = htmlTestCodePanel.replaceAll(phFileName, t.getFilename());
+		
+		String testHighlight;
+		if(t instanceof FailedTest) {
+			FailedTest ft = (FailedTest) t;
+			testHighlight = ft.getFailReason().toString();
+		} else if (t instanceof PassedTest) {
+			testHighlight = "passed";
+		} else {
+			testHighlight = "excluded";
+		}
+		tempTest = tempTest.replaceAll(phStatus, testHighlight);
+		
+//		tempTest = tempTest.replaceAll(phFileLocation, new File(t.getFilename());
+//		tempTest = tempTest.replaceAll(phFileLineNumbers, t.getErrorLines());
+		testExport.append(tempTest);
 		//TODO: Output/output diff
+		if(t.getTestType() == TestType.BASELINE) {
+//			tempTest = htmlTestCodePanel.replaceAll(phFileName, t.getDiffFile());
+	//		tempTest = tempTest.replaceAll(phFileLocation, ...);
+	//		tempTest = tempTest.replaceAll(phFileLineNumbers, "");
+			testExport.append(tempTest);
+		}
+		testExport.append(htmlTestEnd);
 		this.exportHTML.append(tempTest);
 	}
 	

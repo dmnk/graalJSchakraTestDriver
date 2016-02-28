@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 import org.dmnk.graalJSchakraTD.test.GraalJSTest;
 import org.dmnk.graalJSchakraTD.test.GraalJSTestGroup;
@@ -26,7 +27,7 @@ public class GraalJSResultExporterHTMLTest {
 		hre.setExportPath("./data/htmlExportJUnitTest.html");
 		List<TestGroup> ltg = new LinkedList<TestGroup>();
 		TestGroup tg = new GraalJSTestGroup("The Test Group");
-		tg.addTest(new GraalJSTest("theJStest.js"));
+		tg.addTest(new GraalJSTest("theJStest.js", TestType.BASELINE));
 		ltg.add(tg);
 		
 		hre.export(ltg);
@@ -42,25 +43,27 @@ public class GraalJSResultExporterHTMLTest {
 		hre.setExportPath("./data/htmlExportJUnitTest2.html");
 		List<TestGroup> ltg = new LinkedList<TestGroup>();
 		TestGroup tg = new GraalJSTestGroup("The Test Group");
-		tg.addTest(new GraalJSTest("theJStest.js"));
-		tg.addTest(new GraalJSTest("theJStest.js"));
-		tg.addTest(new GraalJSTest("theJStest.js"));
+		org.dmnk.graalJSchakraTD.interfaces.Test t = new GraalJSTest("theJSTest.js", TestType.BASELINE);
+		
+		tg.addTest(t);
+		tg.addTest(t);
+		tg.addTest(t);
 		ltg.add(tg);
 		
 		tg = new GraalJSTestGroup("The 2nd Test Group");
-		tg.addTest(new GraalJSTest("theJStest.js"));
-		tg.addTest(new GraalJSTest("theJStest.js"));
-		tg.addTest(new GraalJSTest("theJStest.js"));
-		tg.addTest(new GraalJSTest("theJStest.js"));
-		tg.addTest(new GraalJSTest("theJStest.js"));
-		tg.addTest(new GraalJSTest("theJStest.js"));
+		tg.addTest(t);
+		tg.addTest(t);
+		tg.addTest(t);
+		tg.addTest(t);
+		tg.addTest(t);
+		tg.addTest(t);
 		ltg.add(tg);
 		
 		hre.export(ltg);
 		
-		File f = new File("./data/htmlExportJUnitTest2.html");
+//		File f = new File("./data/htmlExportJUnitTest2.html");
 		
-		fail("Not yet implemented");
+//		fail("Not yet implemented");
 	}
 
 }

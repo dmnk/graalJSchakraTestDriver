@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 
 public class GraalJSTestFetcher {
@@ -77,7 +78,7 @@ public class GraalJSTestFetcher {
 			if(tg == null) {
 				tg = new GraalJSTestGroup(path);
 			}
-			tg.addTest(new GraalJSTest(f.getName()));
+			tg.addTest(new GraalJSTest(f.getName(), TestType.BASELINE));
 		}
 		return tg;
 	}
