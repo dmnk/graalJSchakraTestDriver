@@ -6,8 +6,12 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
+import org.dmnk.graalJSchakraTD.test.GraalJSExecutedTest;
+import org.dmnk.graalJSchakraTD.test.GraalJSFailedTest;
+import org.dmnk.graalJSchakraTD.test.GraalJSPassedTest;
 import org.dmnk.graalJSchakraTD.test.GraalJSTest;
 import org.dmnk.graalJSchakraTD.test.GraalJSTestGroup;
 import org.dmnk.graalJSchakraTD.test.HTMLResultExporter;
@@ -43,11 +47,23 @@ public class GraalJSResultExporterHTMLTest {
 		hre.setExportPath("./data/htmlExportJUnitTest2.html");
 		List<TestGroup> ltg = new LinkedList<TestGroup>();
 		TestGroup tg = new GraalJSTestGroup("The Test Group");
-		org.dmnk.graalJSchakraTD.interfaces.Test t = new GraalJSTest("theJSTest.js", TestType.BASELINE);
+		//
+		org.dmnk.graalJSchakraTD.interfaces.Test tEx = new GraalJSTest("Excluded.js", TestType.BASELINE);
+		org.dmnk.graalJSchakraTD.interfaces.Test t = new GraalJSTest("Executed.js", TestType.BASELINE);
+		org.dmnk.graalJSchakraTD.interfaces.Test tPassed = new GraalJSPassedTest(t,0, "Passed");
+		org.dmnk.graalJSchakraTD.interfaces.Test tFailedAssert = new GraalJSFailedTest(t,0, "Passed", FailReason.ASSERTION);
+		org.dmnk.graalJSchakraTD.interfaces.Test tFailedCrash = new GraalJSFailedTest(t,0, "Passed", FailReason.CRASH);
+		org.dmnk.graalJSchakraTD.interfaces.Test tFailedExc = new GraalJSFailedTest(t,0, "Passed", FailReason.EXCEPTION);
+		org.dmnk.graalJSchakraTD.interfaces.Test tFailedWarn = new GraalJSFailedTest(t,0, "Passed", FailReason.WARNING);
 		
-		tg.addTest(t);
-		tg.addTest(t);
-		tg.addTest(t);
+		tg.addTest(tEx);
+//		tg.addTest(t);
+		tg.addTest(tPassed);
+		tg.addTest(tFailedAssert);
+		tg.addTest(tFailedCrash);
+		tg.addTest(tFailedExc);
+		tg.addTest(tFailedWarn);
+		
 		ltg.add(tg);
 		
 		tg = new GraalJSTestGroup("The 2nd Test Group");

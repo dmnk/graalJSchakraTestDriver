@@ -12,6 +12,11 @@ public class GraalJSTest implements Test {
 		this.testType = tt;
 	}
 	
+	public GraalJSTest(Test t) {
+		this.testName = t.getFilename();
+		this.testType = t.getTestType();
+	}
+	
 	@Override
 	public String getFilename() {
 		return this.testName; //.concat(".js");

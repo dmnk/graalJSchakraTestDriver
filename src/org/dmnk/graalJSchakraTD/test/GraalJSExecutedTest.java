@@ -2,37 +2,34 @@ package org.dmnk.graalJSchakraTD.test;
 
 import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
+import org.dmnk.graalJSchakraTD.interfaces.Test;
 
-public class GraalJSExecutedTest extends GraalJSTest implements ExecutedTest {
+public abstract class GraalJSExecutedTest extends GraalJSTest implements ExecutedTest {
 
 	private String output;
+	private int returnCode;
 	
-	public GraalJSExecutedTest(String testname, TestType tt) {
+	public GraalJSExecutedTest(String testname, TestType tt, int returnCode, String output) {
 		super(testname, tt);
+		this.returnCode = returnCode;
+		this.output = output;
 	}
-
-	@Override
-	public String getFilename() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public GraalJSExecutedTest(Test plannedTest, int returnCode, String output) {
+		super(plannedTest.getFilename(), plannedTest.getTestType());
+		this.returnCode = returnCode;
+		this.output = output;
 	}
-
-	@Override
-	public String getBaseline() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public TestType getTestType() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public GraalJSExecutedTest(ExecutedTest eTest) {
+		super(eTest);
+		this.returnCode = eTest.getReturncode();
+		this.output = eTest.getOutput();
 	}
 
 	@Override
 	public int getReturncode() {
-		// TODO Auto-generated method stub
-		return 0;
+		return returnCode;
 	}
 
 	@Override

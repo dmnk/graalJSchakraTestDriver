@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
@@ -95,7 +96,7 @@ public class HTMLResultExporter implements ResultExporter {
 	
 	private final String htmlTestBegin =
 			"<!-- HTML TEST BEGIN -->\n"
-			+"\t\t<tr class=\"%%TESTSTATUS%%\">\n"
+			+"\t\t<tr class=\"%%TEST_STATUS%%\">\n"
 			+ "\t\t\t<td>%%TESTNR%%<span class=\"label label-default\">output</span></td>\n"
 			+ "\t\t\t<td>%%TESTNAME%%</td>\n"
 			+ "\t\t\t<td class=\"code-container\">\n";
@@ -164,9 +165,10 @@ public class HTMLResultExporter implements ResultExporter {
 		statusClass = new HashMap<String, String>();
 		statusClass.put("passed", "success");
 		statusClass.put("excluded", "default text-muted");
-		statusClass.put("warning", "info");
-		statusClass.put("crash", "danger");
-		statusClass.put("assert", "warning");
+		statusClass.put(FailReason.WARNING.toString(), "info");
+		statusClass.put(FailReason.CRASH.toString(), "danger");
+		statusClass.put(FailReason.ASSERTION.toString(), "warning");
+		statusClass.put(FailReason.EXCEPTION.toString(), "warning");//TODO: check for class used in mockup
 	}
 	
 	@Override
@@ -217,9 +219,6 @@ public class HTMLResultExporter implements ResultExporter {
 		String tempTest = this.htmlTestBegin.replaceAll(this.phTestName, t.getFilename());
 		tempTest = tempTest.replaceAll(this.phTestNr, ""+this.exportedTests++);
 		//TODO: color depending on test status
-		this.exportHTML.append(tempTest);
-		tempTest = htmlTestCodePanel.replaceAll(phFileName, t.getFilename());
-		
 		String testHighlight;
 		if(t instanceof FailedTest) {
 			FailedTest ft = (FailedTest) t;
@@ -229,7 +228,11 @@ public class HTMLResultExporter implements ResultExporter {
 		} else {
 			testHighlight = "excluded";
 		}
-		tempTest = tempTest.replaceAll(phStatus, testHighlight);
+		tempTest = tempTest.replaceAll(phStatus, statusClass.getOrDefault(testHighlight, new String(testHighlight + " not found!!")));
+		this.exportHTML.append(tempTest);
+		tempTest = htmlTestCodePanel.replaceAll(phFileName, t.getFilename());
+		
+		
 		
 //		tempTest = tempTest.replaceAll(phFileLocation, new File(t.getFilename());
 //		tempTest = tempTest.replaceAll(phFileLineNumbers, t.getErrorLines());
@@ -255,4 +258,5 @@ public class HTMLResultExporter implements ResultExporter {
 			e.printStackTrace();
 		}
 	}
+	
 }

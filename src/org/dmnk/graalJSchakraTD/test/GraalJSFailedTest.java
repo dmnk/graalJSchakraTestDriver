@@ -3,18 +3,24 @@ package org.dmnk.graalJSchakraTD.test;
 import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
+import org.dmnk.graalJSchakraTD.interfaces.Test;
 
 public class GraalJSFailedTest extends GraalJSExecutedTest implements FailedTest {
-
-	public GraalJSFailedTest(String testname, TestType tt) {
-		super(testname, tt);
-		// TODO Auto-generated constructor stub
+	private FailReason failReason;
+	
+	public GraalJSFailedTest(String testname, TestType tt, int returnCode, String output, FailReason fr) {
+		super(testname, tt, returnCode, output);
+		this.failReason = fr;
+	}
+	
+	public GraalJSFailedTest(Test test, int returnCode, String output, FailReason fr) {
+		super(test, returnCode, output);
+		this.failReason = fr;
 	}
 
 	@Override
 	public FailReason getFailReason() {
-		// TODO Auto-generated method stub
-		return null;
+		return failReason;
 	}
 
 }
