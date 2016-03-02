@@ -8,10 +8,10 @@ import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.test.GraalJSTestGroup;
 
-public class TestExecutedGroup extends GraalJSTestGroup {
-	private int passed =0, failed=0, warn=0, exception=0, crash=0, assertion=0, excluded=0;
+public class GraalJSTestExecutedGroup extends GraalJSTestGroup { //TODO: interface for the executed group
+	private int passed =0, failed=0, warn=0, exception=0, crash=0, assertion=0, excluded=0, output;
 	
-	public TestExecutedGroup (String name) {
+	public GraalJSTestExecutedGroup (String name) {
 		super(name);
 		this.testList = new LinkedList<Test>();
 	}
@@ -39,6 +39,9 @@ public class TestExecutedGroup extends GraalJSTestGroup {
 					break;
 				case WARNING:
 					warn++;
+					break;
+				case OUTPUT:
+					output++;
 					break;
 				default:
 					System.err.println("who invented a new failreason and didn't update the statistics in TestExecutedGroup?");
@@ -79,5 +82,9 @@ public class TestExecutedGroup extends GraalJSTestGroup {
 	
 	public int getAssert() {
 		return this.assertion;
+	}
+	
+	public int getOutput() {
+		return output;
 	}
 }
