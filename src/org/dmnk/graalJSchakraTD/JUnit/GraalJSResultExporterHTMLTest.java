@@ -9,7 +9,6 @@ import java.util.List;
 import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
-import org.dmnk.graalJSchakraTD.test.GraalJSExecutedTest;
 import org.dmnk.graalJSchakraTD.test.GraalJSFailedTest;
 import org.dmnk.graalJSchakraTD.test.GraalJSPassedTest;
 import org.dmnk.graalJSchakraTD.test.GraalJSTest;

@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 import org.dmnk.graalJSchakraTD.test.GraalJSTestFetcher;
 import org.junit.Before;
@@ -14,8 +15,8 @@ public class GraalJSTestFetcherTestOneDir {
 	
 	@Before
 	public void setUp() {
-		GraalJSTestFetcher gjtf = new GraalJSTestFetcher();
-		tg = gjtf.fetchFromDir("../../GraalVM-0.10/chakraTests/test/Array");
+		TestFetcher gjtf = new GraalJSTestFetcher("../../GraalVM-0.10/chakraTests/test/Array");
+		tg = gjtf.fetch(); //FromDir("../../GraalVM-0.10/chakraTests/test/Array");
 	}
 	
 	@Test

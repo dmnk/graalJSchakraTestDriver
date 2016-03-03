@@ -7,12 +7,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.dmnk.graalJSchakraTD.enums.TestType;
+import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 
-public class GraalJSTestFetcher {
+public class GraalJSTestFetcher implements TestFetcher {
 	private FilenameFilter dirFilter, jsFilter;
+	private File testDir;
 	
-	public GraalJSTestFetcher() {
+	public GraalJSTestFetcher(String directory) {
 		dirFilter = new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -31,8 +33,15 @@ public class GraalJSTestFetcher {
 				}
 			}
 		};
+		
+		testDir = new File(directory);
 	}
-
+	
+	@Override
+	public List<TestGroup> fetch() {
+		return fetchFromDir(testDir.getAbsolutePath());
+	}
+	
 	public List<TestGroup> fetchFromDir(String chakraPath) {
 		List<TestGroup> ltg = new LinkedList<TestGroup>();		
 		

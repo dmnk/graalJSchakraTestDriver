@@ -168,7 +168,7 @@ public class HTMLResultExporter implements ResultExporter {
 		statusClass.put(FailReason.WARNING.toString(), "info");
 		statusClass.put(FailReason.CRASH.toString(), "danger");
 		statusClass.put(FailReason.ASSERTION.toString(), "warning");
-		statusClass.put(FailReason.EXCEPTION.toString(), "warning");//TODO: check for class used in mockup
+		statusClass.put(FailReason.EXCEPTION.toString(), "danger");
 	}
 	
 	@Override
