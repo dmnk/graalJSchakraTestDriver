@@ -8,14 +8,15 @@ import org.dmnk.graalJSchakraTD.interfaces.ResultExporter;
 import org.dmnk.graalJSchakraTD.interfaces.TestInitiator;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
+import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
 import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 
 public class GraalJSTestRunner {
-	private String graalPath;
-	private String chakraPath;
+//	private String graalPath;
+//	private String chakraPath;
 	private List<ResultExporter> resExp;
 	private List<TestGroup> tests;
-	private List<TestGroup> executedTests;
+	private List<TestExecutedGroup> executedTests;
 	private TestInitiator testInit;
 	private TestFetcher tf;
 
@@ -32,8 +33,8 @@ public class GraalJSTestRunner {
 			TestInitiator ti = new GraalJSTestInitiator(graalJSpath);
 			TestFetcher tf = new GraalJSTestFetcher(chakraTestsPath);
 			
-			ctr.setGraalPath("./../bin/js");
-			ctr.setChakraPath("./chakraTests/test");
+//			ctr.setGraalPath("./../bin/js");
+//			ctr.setChakraPath("./chakraTests/test");
 			
 			ctr.setTestInitiator(ti);
 			ctr.setTestFetcher(tf);
@@ -54,21 +55,21 @@ public class GraalJSTestRunner {
 		this.resExp.add(re);
 	}
 
-	private String getGraalPath() {
-		return graalPath;
-	}
+//	private String getGraalPath() {
+//		return graalPath;
+//	}
 
-	private void setGraalPath(String graalPath) {
-		this.graalPath = graalPath;
-	}
+//	private void setGraalPath(String graalPath) {
+//		this.graalPath = graalPath;
+//	}
 
-	private String getChakraPath() {
-		return chakraPath;
-	}
+//	private String getChakraPath() {
+//		return chakraPath;
+//	}
 
-	private void setChakraPath(String chakraPath) {
-		this.chakraPath = chakraPath;
-	}
+//	private void setChakraPath(String chakraPath) {
+//		this.chakraPath = chakraPath;
+//	}
 	
 	private void setTestInitiator(TestInitiator ti) {
 		this.testInit = ti;
@@ -88,11 +89,11 @@ public class GraalJSTestRunner {
 		
 		//execute the enabled tests
 		for(TestGroup tg : tests) {
-			TestGroup etg = new GraalJSTestGroup(tg.getGroupName());
+			TestExecutedGroup etg = new GraalJSTestExecutedGroup(tg.getGroupName());
 			executedTests.add(etg);
 			
 			for(Test t : tg.getTests()) {
-				etg.addTest(testInit.runTest(t, getGraalPath()));
+				etg.addTest(testInit.runTest(t));
 			}
 			
  		}

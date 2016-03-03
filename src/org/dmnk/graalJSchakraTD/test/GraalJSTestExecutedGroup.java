@@ -6,9 +6,10 @@ import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
+import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
 import org.dmnk.graalJSchakraTD.test.GraalJSTestGroup;
 
-public class GraalJSTestExecutedGroup extends GraalJSTestGroup { //TODO: interface for the executed group
+public class GraalJSTestExecutedGroup extends GraalJSTestGroup implements TestExecutedGroup {
 	private int passed =0, failed=0, warn=0, exception=0, crash=0, assertion=0, excluded=0, output;
 	
 	public GraalJSTestExecutedGroup (String name) {
@@ -56,35 +57,49 @@ public class GraalJSTestExecutedGroup extends GraalJSTestGroup { //TODO: interfa
 		}
 	}
 	
+	//TODO: status enum, extending failtype enum??
+	@Override
 	public int getPassed() {
 		return this.passed;
 	}
-	
+
+	@Override
 	public int getFailed() {
 		return this.failed;
 	}
 
+	@Override
 	public int getWarnings() {
 		return this.warn;
 	}
-	
+
+	@Override
 	public int getException() {
 		return this.exception;
 	}
-	
+
+	@Override
 	public int getExcluded() {
 		return this.excluded;
 	}
-	
+
+	@Override
 	public int getCrashed() {
 		return this.crash;
 	}
-	
+
+	@Override
 	public int getAssert() {
 		return this.assertion;
 	}
-	
+
+	@Override
 	public int getOutput() {
 		return output;
+	}
+	
+	@Override
+	public int getTotal() {
+		return super.getTests().size();
 	}
 }

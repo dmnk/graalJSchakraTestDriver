@@ -22,7 +22,7 @@ public class GraalJSTestInitiator implements TestInitiator {
 	}
 	
 	@Override
-	public Test runTest(Test t, String basePath) {
+	public Test runTest(Test t) {
 		// TODO Auto-generated method stub
 		return null;
 	}

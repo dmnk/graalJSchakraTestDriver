@@ -8,11 +8,11 @@ import java.util.List;
 
 import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.enums.TestType;
-import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
+import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
 import org.dmnk.graalJSchakraTD.test.GraalJSFailedTest;
 import org.dmnk.graalJSchakraTD.test.GraalJSPassedTest;
 import org.dmnk.graalJSchakraTD.test.GraalJSTest;
-import org.dmnk.graalJSchakraTD.test.GraalJSTestGroup;
+import org.dmnk.graalJSchakraTD.test.GraalJSTestExecutedGroup;
 import org.dmnk.graalJSchakraTD.test.HTMLResultExporter;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,8 +28,8 @@ public class GraalJSResultExporterHTMLTest {
 	@Test
 	public void testSetExportPath() {
 		hre.setExportPath("./data/htmlExportJUnitTest.html");
-		List<TestGroup> ltg = new LinkedList<TestGroup>();
-		TestGroup tg = new GraalJSTestGroup("The Test Group");
+		List<TestExecutedGroup> ltg = new LinkedList<TestExecutedGroup>();
+		TestExecutedGroup tg = new GraalJSTestExecutedGroup("The Test Group");
 		tg.addTest(new GraalJSTest("theJStest.js", TestType.BASELINE));
 		ltg.add(tg);
 		
@@ -44,8 +44,8 @@ public class GraalJSResultExporterHTMLTest {
 	@Test
 	public void testExport() {
 		hre.setExportPath("./data/htmlExportJUnitTest2.html");
-		List<TestGroup> ltg = new LinkedList<TestGroup>();
-		TestGroup tg = new GraalJSTestGroup("The Test Group");
+		List<TestExecutedGroup> ltg = new LinkedList<TestExecutedGroup>();
+		TestExecutedGroup tg = new GraalJSTestExecutedGroup("The Test Group");
 		//
 		org.dmnk.graalJSchakraTD.interfaces.Test tEx = new GraalJSTest("Excluded.js", TestType.BASELINE);
 		org.dmnk.graalJSchakraTD.interfaces.Test t = new GraalJSTest("Executed.js", TestType.BASELINE);
@@ -65,7 +65,7 @@ public class GraalJSResultExporterHTMLTest {
 		
 		ltg.add(tg);
 		
-		tg = new GraalJSTestGroup("The 2nd Test Group");
+		tg = new GraalJSTestExecutedGroup("The 2nd Test Group");
 		tg.addTest(t);
 		tg.addTest(t);
 		tg.addTest(t);

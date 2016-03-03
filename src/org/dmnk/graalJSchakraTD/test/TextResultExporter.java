@@ -10,6 +10,7 @@ import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.ResultExporter;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
+import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
 
 public class TextResultExporter implements ResultExporter {
 	private String exportPath;
@@ -25,7 +26,7 @@ public class TextResultExporter implements ResultExporter {
 	}
 
 	@Override
-	public void export(List<TestGroup> testlist) {
+	public void export(List<TestExecutedGroup> testlist) {
 		addTXTHeader();
 		
 		for (TestGroup group : testlist) {

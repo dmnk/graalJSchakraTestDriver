@@ -13,7 +13,7 @@ import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.ResultExporter;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
-import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
+import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
 
 public class HTMLResultExporter implements ResultExporter {
 	private String exportPath;
@@ -65,7 +65,8 @@ public class HTMLResultExporter implements ResultExporter {
         +"<h4 class=\"panel-title\">%%GROUPNAME%%</h4>"
         +"<div class=\"well-sm\">"
         +"<div class=\"progress\">"
-	        +"<div class=\"progress-bar progress-bar-success\" style=\"width: 35%\"><span class=\"sr-only\">35% Complete (success)</span></div>"
+	        //+"<div class=\"progress-bar progress-bar-success\" style=\"width: 35%\"><span class=\"sr-only\">35% Complete (success)</span></div>"
+	        +"<div class=\"progress-bar progress-bar-success\" role=\"progressbar\" aria-valuenow=\"%%PCT_PASSED%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"min-width: 2em; width: %%PCT_PASSED%%%;\"> %%PCT_PASSED%%%</div>"
 	        +"<div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"2\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"min-width: 2em; width: 2%;\"> 2%</div>"
 	        +"<div class=\"progress-bar progress-bar-warning\" style=\"width: 20%\"><span class=\"sr-only\">20% Complete (warning)</span></div>"
 	        +"<div class=\"progress-bar progress-bar-danger\" style=\"width: 10%\"><span class=\"sr-only\">10% Complete (danger)</span></div>"
@@ -156,6 +157,16 @@ public class HTMLResultExporter implements ResultExporter {
 	private final String phTestNr = "%%TESTNR%%";
 	private final String phFileName = "%%FILE_NAME%%";
 	private final String phStatus = "%%TEST_STATUS%%";
+	
+	//DIAGRAM
+	private final String pctPassed ="%%PCT_PASSED%%";
+	private final String pctExcluded ="%%PCT_EXCLUDED%";
+	private final String pctWarning = "%%PCT_WARNING%";
+	private final String pctCrash = "%%PCT_CRASH%%";
+	private final String pctAssertion = "%%PCT_ASSERTION%%";
+	private final String pctException = "%%PCT_EXCEPTION%%";
+	private final String pctTotal = "%%PCT_TOTAL%%";
+	
 	private Map<String, String> statusClass;
 	
 	public HTMLResultExporter(String path) {
@@ -177,10 +188,10 @@ public class HTMLResultExporter implements ResultExporter {
 	}
 
 	@Override
-	public void export(List<TestGroup> testlist) {
+	public void export(List<TestExecutedGroup> testlist) {
 		addHTMLHeader();
 		
-		for (TestGroup group : testlist) {
+		for (TestExecutedGroup group : testlist) {
 			addGroupHeader(group);
 //			this.exportedTests = 0; //reset for every group?
 			for(Test test : group.getTests()) {
@@ -202,10 +213,11 @@ public class HTMLResultExporter implements ResultExporter {
 		this.exportHTML.append(this.htmlFooter);
 	}
 	
-	private void addGroupHeader(TestGroup tg) {
+	private void addGroupHeader(TestExecutedGroup tg) {
 		String tempGroupHeader = this.htmlTestGroupStart;
 		tempGroupHeader = tempGroupHeader.replaceAll(this.phTestGroup, tg.getGroupName());
 		tempGroupHeader = tempGroupHeader.replaceAll(this.phTestGroupNr, ""+this.exportedGroups++);
+		tempGroupHeader = tempGroupHeader.replaceAll(pctTotal, ""+tg.getTotal());
 		this.exportHTML.append(tempGroupHeader);
 	}
 	
@@ -218,7 +230,7 @@ public class HTMLResultExporter implements ResultExporter {
 		
 		String tempTest = this.htmlTestBegin.replaceAll(this.phTestName, t.getFilename());
 		tempTest = tempTest.replaceAll(this.phTestNr, ""+this.exportedTests++);
-		//TODO: color depending on test status
+		
 		String testHighlight;
 		if(t instanceof FailedTest) {
 			FailedTest ft = (FailedTest) t;
