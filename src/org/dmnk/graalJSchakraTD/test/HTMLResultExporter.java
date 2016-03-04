@@ -3,6 +3,7 @@ package org.dmnk.graalJSchakraTD.test;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,10 +67,13 @@ public class HTMLResultExporter implements ResultExporter {
         +"<div class=\"well-sm\">"
         +"<div class=\"progress\">"
 	        //+"<div class=\"progress-bar progress-bar-success\" style=\"width: 35%\"><span class=\"sr-only\">35% Complete (success)</span></div>"
-	        +"<div class=\"progress-bar progress-bar-success\" role=\"progressbar\" aria-valuenow=\"%%PCT_PASSED%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"min-width: 2em; width: %%PCT_PASSED%%%;\"> %%PCT_PASSED%%%</div>"
-	        +"<div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"2\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"min-width: 2em; width: 2%;\"> 2%</div>"
-	        +"<div class=\"progress-bar progress-bar-warning\" style=\"width: 20%\"><span class=\"sr-only\">20% Complete (warning)</span></div>"
-	        +"<div class=\"progress-bar progress-bar-danger\" style=\"width: 10%\"><span class=\"sr-only\">10% Complete (danger)</span></div>"
+	        +"<div class=\"progress-bar progress-bar-success\" role=\"progressbar\" aria-valuenow=\"%%PCT_PASSED%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_PASSED%%%;\"> %%PCT_PASSED%%%</div>"
+	        +"<div class=\"progress-bar progress-bar-danger\" role=\"progressbar\" aria-valuenow=\"%%PCT_RED%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_RED%%%;\"> %%PCT_RED%%%</div>"
+	        +"<div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"%%PCT_BLUE%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_BLUE%%%;\"> %%PCT_BLUE%%%</div>"
+	        +"<div class=\"progress-bar progress-bar-warning\" role=\"progressbar\" aria-valuenow=\"%%PCT_ORANGE%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_ORANGE%%%;\"> %%PCT_ORANGE%%%</div>"
+//	        +"<div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"2\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"min-width: 2em; width: 2%;\"> 2%</div>"
+//	        +"<div class=\"progress-bar progress-bar-warning\" style=\"width: 20%\"><span class=\"sr-only\">20% Complete (warning)</span></div>"
+//	        +"<div class=\"progress-bar progress-bar-danger\" style=\"width: 10%\"><span class=\"sr-only\">10% Complete (danger)</span></div>"
 	      +"</div>"
 	      +"</div>"
 	      +"</a>"
@@ -159,12 +163,12 @@ public class HTMLResultExporter implements ResultExporter {
 	private final String phStatus = "%%TEST_STATUS%%";
 	
 	//DIAGRAM
-	private final String pctPassed ="%%PCT_PASSED%%";
-	private final String pctExcluded ="%%PCT_EXCLUDED%";
-	private final String pctWarning = "%%PCT_WARNING%";
-	private final String pctCrash = "%%PCT_CRASH%%";
-	private final String pctAssertion = "%%PCT_ASSERTION%%";
-	private final String pctException = "%%PCT_EXCEPTION%%";
+	private final String pctGreen ="%%PCT_PASSED%%";
+//	private final String pctExcluded ="%%PCT_EXCLUDED%"; //stays empty per definition ...
+	private final String pctOrange = "%%PCT_ORANGE%%";
+	private final String pctRed = "%%PCT_RED%%";
+//	private final String pctOrange = "%%PCT_ASSERTION%%";
+	private final String pctBlue = "%%PCT_BLUE%%";
 	private final String pctTotal = "%%PCT_TOTAL%%";
 	
 	private Map<String, String> statusClass;
@@ -180,6 +184,7 @@ public class HTMLResultExporter implements ResultExporter {
 		statusClass.put(FailReason.CRASH.toString(), "danger");
 		statusClass.put(FailReason.ASSERTION.toString(), "warning");
 		statusClass.put(FailReason.EXCEPTION.toString(), "danger");
+		statusClass.put(FailReason.OUTPUT.toString(), "warning");
 	}
 	
 	@Override
@@ -215,9 +220,25 @@ public class HTMLResultExporter implements ResultExporter {
 	
 	private void addGroupHeader(TestExecutedGroup tg) {
 		String tempGroupHeader = this.htmlTestGroupStart;
+		
+		DecimalFormat df = new DecimalFormat ("#.##");
+		
+		Float pctPassed = (float)(tg.getPassed())*100/tg.getTotal();
+		Float pctCrash = (float)tg.getCrashed()*100/tg.getTotal();
+		Float pctException = (float)tg.getException()*100/tg.getTotal();
+		Float pctWarning = (float)tg.getWarnings()*100/tg.getTotal();
+		Float pctAssert = (float)tg.getAssert()*100/tg.getTotal();
+		Float pctOutput = (float)tg.getOutput()*100/tg.getTotal();
+		
 		tempGroupHeader = tempGroupHeader.replaceAll(this.phTestGroup, tg.getGroupName());
 		tempGroupHeader = tempGroupHeader.replaceAll(this.phTestGroupNr, ""+this.exportedGroups++);
-		tempGroupHeader = tempGroupHeader.replaceAll(pctTotal, ""+tg.getTotal());
+		tempGroupHeader = tempGroupHeader.replaceAll(this.pctTotal, ""+tg.getTotal());
+		tempGroupHeader = tempGroupHeader.replaceAll(this.pctGreen, 	df.format(pctPassed));
+//		crash & exception
+		tempGroupHeader = tempGroupHeader.replaceAll(this.pctRed, 		df.format(pctCrash + pctException));
+		tempGroupHeader = tempGroupHeader.replaceAll(this.pctOrange, 	df.format(pctOutput + pctAssert ));
+		tempGroupHeader = tempGroupHeader.replaceAll(this.pctBlue, 		df.format(pctWarning));
+//		tempGroupHeader = tempGroupHeader.replaceAll(this.pctInfo, replacement)
 		this.exportHTML.append(tempGroupHeader);
 	}
 	
