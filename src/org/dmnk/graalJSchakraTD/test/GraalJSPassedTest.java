@@ -13,4 +13,8 @@ public class GraalJSPassedTest extends GraalJSExecutedTest implements PassedTest
 	public GraalJSPassedTest(Test Test, int returnCode, String output) {
 		super(Test, returnCode, output);
 	}
+
+	public GraalJSPassedTest(Test t, TestOutput to) {
+		super(t, to);
+	}
 }
