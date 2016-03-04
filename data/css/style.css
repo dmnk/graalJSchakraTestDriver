@@ -14,3 +14,8 @@
 .line-numbers {
 	margin: 0 !important;
 }
+
+th {
+    background-color: #eceeef;
+    color: #55595c;
+}
