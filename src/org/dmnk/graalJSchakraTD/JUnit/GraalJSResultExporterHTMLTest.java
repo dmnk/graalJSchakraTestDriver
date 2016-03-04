@@ -47,8 +47,8 @@ public class GraalJSResultExporterHTMLTest {
 		List<TestExecutedGroup> ltg = new LinkedList<TestExecutedGroup>();
 		TestExecutedGroup tg = new GraalJSTestExecutedGroup("The Test Group");
 		//
-		org.dmnk.graalJSchakraTD.interfaces.Test tEx = new GraalJSTest("Excluded.js", TestType.BASELINE);
-		org.dmnk.graalJSchakraTD.interfaces.Test t = new GraalJSTest("Executed.js", TestType.BASELINE);
+		org.dmnk.graalJSchakraTD.interfaces.Test tEx = new GraalJSTest("arr_bailout.js", TestType.BASELINE);
+		org.dmnk.graalJSchakraTD.interfaces.Test t = new GraalJSTest("arr_bailout.js", TestType.BASELINE);
 		org.dmnk.graalJSchakraTD.interfaces.Test tPassed = new GraalJSPassedTest(t,0, "Passed");
 		org.dmnk.graalJSchakraTD.interfaces.Test tFailedAssert = new GraalJSFailedTest(t,0, "Passed", FailReason.ASSERTION);
 		org.dmnk.graalJSchakraTD.interfaces.Test tFailedOutput = new GraalJSFailedTest(t,0, "Passed", FailReason.OUTPUT);

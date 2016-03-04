@@ -21,6 +21,7 @@ public class HTMLResultExporter implements ResultExporter {
 	private StringBuilder exportHTML;
 	private int exportedGroups = 1;
 	private int exportedTests;
+	private int testID;
 	
 	/**
 	 * 1: htmlHeader
@@ -66,22 +67,18 @@ public class HTMLResultExporter implements ResultExporter {
         +"<h4 class=\"panel-title\">%%GROUPNAME%%</h4>"
         +"<div class=\"well-sm\">"
         +"<div class=\"progress\">"
-	        //+"<div class=\"progress-bar progress-bar-success\" style=\"width: 35%\"><span class=\"sr-only\">35% Complete (success)</span></div>"
-	        +"<div class=\"progress-bar progress-bar-success\" role=\"progressbar\" aria-valuenow=\"%%PCT_PASSED%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_PASSED%%%;\"> %%PCT_PASSED%%%</div>"
+        	+"<div class=\"progress-bar progress-bar-success\" role=\"progressbar\" aria-valuenow=\"%%PCT_PASSED%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_PASSED%%%;\"> %%PCT_PASSED%%%</div>"
 	        +"<div class=\"progress-bar progress-bar-danger\" role=\"progressbar\" aria-valuenow=\"%%PCT_RED%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_RED%%%;\"> %%PCT_RED%%%</div>"
 	        +"<div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"%%PCT_BLUE%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_BLUE%%%;\"> %%PCT_BLUE%%%</div>"
 	        +"<div class=\"progress-bar progress-bar-warning\" role=\"progressbar\" aria-valuenow=\"%%PCT_ORANGE%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_ORANGE%%%;\"> %%PCT_ORANGE%%%</div>"
-//	        +"<div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"2\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"min-width: 2em; width: 2%;\"> 2%</div>"
-//	        +"<div class=\"progress-bar progress-bar-warning\" style=\"width: 20%\"><span class=\"sr-only\">20% Complete (warning)</span></div>"
-//	        +"<div class=\"progress-bar progress-bar-danger\" style=\"width: 10%\"><span class=\"sr-only\">10% Complete (danger)</span></div>"
-	      +"</div>"
+          +"</div>"
 	      +"</div>"
 	      +"</a>"
     +"</div>\n"
    +"<div id=\"collapse%%GROUPNR%%\" class=\"panel-collapse collapse in\">\n"
       + "<div class=\"panel-body\">"
       	+"<div class=\"col-md-12\">"
-	          +"<table class=\"table table-bordered\">"
+	          +"<table class=\"table table-hover\">"
 	            +"<thead>"
 	             + "<tr>"
 	                +"<th class=\"col-md-1\">#</th>"
@@ -112,15 +109,16 @@ public class HTMLResultExporter implements ResultExporter {
 			+"<div class=\"panel panel-default\">\n"
 			+"<div class=\"panel-heading\">\n"
 			+"<h4 class=\"panel-title\">\n"
-			+"<a data-toggle=\"collapse\" href=\"#collapse1_js\">%%FILE_NAME%%</a>\n" //TODO: correct the href
+			+"<a data-toggle=\"collapse\" href=\"#collapse%%TEST_ID%%_js\">%%FILE_NAME%%</a>\n" //TODO: correct the href
 			+"<a href=\"%%FILE_LOCATION%%\" target=\"_blank\">\n"
 			+"<span class=\"glyphicon glyphicon-open-file\"></span>\n"
 			+"</a>\n"
 			+"</h4>\n"
 			+"</div>\n"
-			+"<div id=\"collapse1_js\" class=\"panel-collapse collapse\">\n" //TODO: same id as href above
+			+"<div id=\"collapse%%TEST_ID%%_js\" class=\"panel-collapse collapse\">\n" //TODO: same id as href above
 			+"<div class=\"panel-body code\">\n"
 			+"<pre class=\"line-numbers\" data-src=\"%%FILE_LOCATION%%\" data-line=\"%%HIGHLIGHT_LINES%%\"></pre>\n"
+//			+"<pre class=\"line-numbers\" data-src=\"%%FILE_NAME%%\"></pre>\n"
 			+"</div>\n"
 			+"</div>\n"
 			+"</div>\n"
@@ -158,7 +156,8 @@ public class HTMLResultExporter implements ResultExporter {
 	private final String phTestGroup = "%%GROUPNAME%%";
 	private final String phTestName = "%%TESTNAME%%";
 	private final String phTestGroupNr = "%%GROUPNR%%";
-	private final String phTestNr = "%%TESTNR%%";
+	private final String phTestNr = "%%TESTNR%%"; //unique for the testgroup
+	private final String phTestID = "%%TEST_ID%%"; //unique for the whole html
 	private final String phFileName = "%%FILE_NAME%%";
 	private final String phStatus = "%%TEST_STATUS%%";
 	
@@ -247,6 +246,7 @@ public class HTMLResultExporter implements ResultExporter {
 	}
 	
 	private void addTest(Test t) {
+		testID++;
 		StringBuilder testExport = new StringBuilder();
 		
 		String tempTest = this.htmlTestBegin.replaceAll(this.phTestName, t.getFilename());
@@ -264,7 +264,7 @@ public class HTMLResultExporter implements ResultExporter {
 		tempTest = tempTest.replaceAll(phStatus, statusClass.getOrDefault(testHighlight, new String(testHighlight + " not found!!")));
 		this.exportHTML.append(tempTest);
 		tempTest = htmlTestCodePanel.replaceAll(phFileName, t.getFilename());
-		
+		tempTest = tempTest.replaceAll(phTestID, ""+testID);
 		
 		
 //		tempTest = tempTest.replaceAll(phFileLocation, new File(t.getFilename());
