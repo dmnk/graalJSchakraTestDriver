@@ -11,15 +11,15 @@ public class TestOutput {
 		this.errOut = errOut;
 	}
 	
-	int getReturnCode() {
+	public int getReturnCode() {
 		return returnCode;
 	}
 	
-	String getStdOut() {
+	public String getStdOut() {
 		return stdOut;
 	}
 	
-	String getErrOut() {
+	public String getErrOut() {
 		return errOut;
 	}	
 }

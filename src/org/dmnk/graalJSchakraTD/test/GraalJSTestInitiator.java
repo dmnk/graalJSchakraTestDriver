@@ -1,10 +1,17 @@
 package org.dmnk.graalJSchakraTD.test;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.time.chrono.JapaneseChronology;
+import java.util.List;
 
 import org.dmnk.graalJSchakraTD.Exceptions.GraalJSTestException;
 import org.dmnk.graalJSchakraTD.enums.TestType;
@@ -71,7 +78,7 @@ public class GraalJSTestInitiator implements TestInitiator {
 				if(to.getStdOut().equals("Passed")) {
 					return true;
 				} else {
-					return true;
+					return false;
 				}
 			default: System.err.println("un-known / set testtype !"); 
 				return false;
@@ -79,61 +86,137 @@ public class GraalJSTestInitiator implements TestInitiator {
 		}
 	}
 	
-	private TestOutput executeGraalJS(File t) {
-		TestOutput tc = null;
+	public TestOutput executeGraalJS(File t) {
+		//combine test and harness
+		File test = concatTestHarnes(t);
+		//execute test
+		TestOutput to = launchGraal(test);
 		
-		/**
-		 * some workarounds needed as usage of harnes file supresses output on dev pc
-		 */
-		String[] command =
-		    {
-		        "sh",
-		    };
-		    Process p;
-			try {
-				p = Runtime.getRuntime().exec(command);
-				new Thread(new SyncPipe(p.getErrorStream(), System.err)).start();
-			    new Thread(new SyncPipe(p.getInputStream(), System.out)).start();
-			    PrintWriter stdin = new PrintWriter(p.getOutputStream());
-			    stdin.println("dir c:\\ /A /Q");
-			    //TODO AAA continue here ;) 
-			    // write any other commands you want here
-			    stdin.close();
-			    tc = new TestOutput(p.waitFor(),"","");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		    
-		    
-		    return tc;
+		
+		return to;
 	}
 	
 	/**
-	 * @author oracle forum
-	 * @see http://kr.forums.oracle.com/forums/thread.jspa?messageID=9250051
+	 * @return the path to the combined file
 	 */
-	private class SyncPipe implements Runnable	{
-		private final OutputStream ostrm_;
-		private final InputStream istrm_;
-		  
-		public SyncPipe(InputStream istrm, OutputStream ostrm) {	
-			istrm_ = istrm;
-			ostrm_ = ostrm;
+	private File concatTestHarnes(File t) {
+		String harness = "WScript = {};\nWScript.Echo = print;\n";
+		
+		File nFile = new File(t.getAbsolutePath().replace(".js", ".HNS.js"));
+		List <String> test;
+		
+		try {
+			PrintWriter pw = new PrintWriter(nFile, "UTF-8");
+			test = java.nio.file.Files.readAllLines(t.toPath(), java.nio.charset.StandardCharsets.UTF_8);
+			pw.print(harness);
+			for(String line : test) {
+				pw.println(line);
+			}
+			pw.close();
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
-		public void run() {
-			try {
-				final byte[] buffer = new byte[1024];
-			    for (int length = 0; (length = istrm_.read(buffer)) != -1; ) {
-			    	ostrm_.write(buffer, 0, length);
-			    }
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-			  
+		return nFile;
 	}
+	
+	public TestOutput launchGraal(File test) {
+		String cmdLine = graalJS + " " +test.getAbsolutePath();
+ 	    String line;
+	    String sysOut = "";
+	    String errOut = "";
+	    int rc = -99;
+	    
+	    try {
+	        Process p = Runtime.getRuntime().exec(cmdLine);
+	        BufferedReader input = new BufferedReader
+	            (new InputStreamReader(p.getInputStream()));
+	        BufferedReader error = new BufferedReader
+        		(new InputStreamReader(p.getErrorStream()));
+	        while ((line = input.readLine()) != null) {
+	            sysOut += (line + '\n');
+	        }
+	        while ((line = error.readLine()) != null) {
+	        	errOut += (line + '\n');
+	        }
+	       
+	        rc = p.waitFor();
+	        input.close();
+	        }
+	    catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
+	    
+	    return new TestOutput(rc, removeTrailingNewline(sysOut), removeTrailingNewline(errOut));
+	}
+	
+	private String removeTrailingNewline(String old) {
+		StringBuilder n = new StringBuilder(old);
+		if(n.length() > 0 && n.charAt(n.length()-1) == '\n') {
+			n.deleteCharAt(n.length()-1);
+		}
+		return n.toString();
+	}
+	
+	/** try a more condensed example */
+//	private TestOutput executeGraalJS(File t) {
+//		TestOutput tc = null;
+//		
+//		/**
+//		 * some workarounds needed as usage of harnes file supresses output on dev pc
+//		 */
+//		String[] command =
+//		    {
+//		        "sh",
+//		    };
+//		    Process p;
+//			try {
+//				p = Runtime.getRuntime().exec(command);
+//				new Thread(new SyncPipe(p.getErrorStream(), System.err)).start();
+//			    new Thread(new SyncPipe(p.getInputStream(), System.out)).start();
+//			    PrintWriter stdin = new PrintWriter(p.getOutputStream());
+//			    stdin.println("dir c:\\ /A /Q");
+//			    //TODO AAA continue here ;) 
+//			    // write any other commands you want here
+//			    stdin.close();
+//			    tc = new TestOutput(p.waitFor(),"","");
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//		    
+//		    
+//		    return tc;
+//	}
+//	
+//	/**
+//	 * @author oracle forum
+//	 * @see http://kr.forums.oracle.com/forums/thread.jspa?messageID=9250051
+//	 */
+//	private class SyncPipe implements Runnable	{
+//		private final OutputStream ostrm_;
+//		private final InputStream istrm_;
+//		  
+//		public SyncPipe(InputStream istrm, OutputStream ostrm) {	
+//			istrm_ = istrm;
+//			ostrm_ = ostrm;
+//		}
+//		
+//		public void run() {
+//			try {
+//				final byte[] buffer = new byte[1024];
+//			    for (int length = 0; (length = istrm_.read(buffer)) != -1; ) {
+//			    	ostrm_.write(buffer, 0, length);
+//			    }
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+//			  
+//	}
 }
