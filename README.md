@@ -14,13 +14,15 @@ Right now it looks like the test-driver will be available to execute arbitrary t
 - [x] fetching the tests in provided base-directory
 - [ ] in/excluding tests based on white/blacklists
 - [ ] excluding tests known to crash the VM based on a additional "crashlist"
-- [ ] executing the tests
-- [ ] exporting the results
+- [x] executing the tests
+- [ ] determine the fail reason / line
+- [x] exporting the results
   - different formats (html & fail/pass filename only)
   - text should be ready
 - [x] JUnit tests for
 	- TestFetcher
 	- HTMLResultExporter
+	- TestInitiator
   
 ## get the open-sourced JS tests from ms chakra core project
 ```
