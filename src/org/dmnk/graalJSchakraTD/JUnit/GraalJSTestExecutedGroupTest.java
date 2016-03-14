@@ -3,11 +3,11 @@ package org.dmnk.graalJSchakraTD.JUnit;
 import static org.junit.Assert.*;
 
 import org.dmnk.graalJSchakraTD.enums.FailReason;
-import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.test.GraalJSFailedTest;
 import org.dmnk.graalJSchakraTD.test.GraalJSPassedTest;
 import org.dmnk.graalJSchakraTD.test.GraalJSTest;
 import org.dmnk.graalJSchakraTD.test.GraalJSTestExecutedGroup;
+import org.dmnk.graalJSchakraTD.test.TestType;
 import org.junit.Before;
 import org.junit.Test;
 

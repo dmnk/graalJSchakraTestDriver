@@ -1,9 +1,16 @@
 package org.dmnk.graalJSchakraTD.test;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.dmnk.graalJSchakraTD.Exceptions.GraalJSTestException;
+import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
+import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
+import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.ResultExporter;
 import org.dmnk.graalJSchakraTD.interfaces.TestInitiator;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
@@ -22,14 +29,14 @@ public class GraalJSTestRunner {
 
 	public static void main(String[] args) {
 		
-		String graalJSpath = "./../bin/js";
-		String chakraTestsPath = "./chakraTests/test";
+		String graalJSpath = "../../GraalVM-0.10/bin/js";
+		String chakraTestsPath = "../../GraalVM-0.10/chakraTests/test/Array";
 		//TODO: parameter parser
 		
 		GraalJSTestRunner ctr = new GraalJSTestRunner();
 		try {
-			ResultExporter hre = new HTMLResultExporter("htmlResult.html");
-			ResultExporter tre = new TextResultExporter("FailPass.csv");
+			ResultExporter hre = new HTMLResultExporter("./data/htmlResult.html");
+			ResultExporter tre = new TextResultExporter("./data/FailPass.csv");
 			TestInitiator ti = new GraalJSTestInitiator(graalJSpath);
 			TestFetcher tf = new GraalJSTestFetcher(chakraTestsPath);
 			
@@ -39,37 +46,23 @@ public class GraalJSTestRunner {
 			ctr.setTestInitiator(ti);
 			ctr.setTestFetcher(tf);
 			ctr.addResultExporter(hre);
-			ctr.addResultExporter(tre);
+//			ctr.addResultExporter(tre);
 			ctr.run(args);
 		} catch (GraalJSTestException e) {
 			System.err.println(e.getMessage());
 			System.exit(-1);
-		}		
+		}
+		System.exit(0);
 	}
 	
 	public GraalJSTestRunner() {
-		this.resExp = new LinkedList<ResultExporter>();
+		resExp = new LinkedList<ResultExporter>();
+		executedTests = new LinkedList<TestExecutedGroup>();
 	}
 	
 	private void addResultExporter(ResultExporter re) {
 		this.resExp.add(re);
 	}
-
-//	private String getGraalPath() {
-//		return graalPath;
-//	}
-
-//	private void setGraalPath(String graalPath) {
-//		this.graalPath = graalPath;
-//	}
-
-//	private String getChakraPath() {
-//		return chakraPath;
-//	}
-
-//	private void setChakraPath(String chakraPath) {
-//		this.chakraPath = chakraPath;
-//	}
 	
 	private void setTestInitiator(TestInitiator ti) {
 		this.testInit = ti;
@@ -86,6 +79,11 @@ public class GraalJSTestRunner {
 		tests = tf.fetch(); //FromDir(this.getChakraPath());
 		
 		//process white/black/crashlists
+		Map<String, HashMap<String, Integer>> crashlist = new HashMap<String, HashMap<String, Integer>>();
+		HashMap<String, Integer> arrayexclusionlist = new HashMap<String, Integer>();
+		arrayexclusionlist.put("array_init.js", 1);
+		arrayexclusionlist.put("CopyOnAccessArray_cache_index_overflow.js", 1);
+		crashlist.put("Array", arrayexclusionlist);
 		
 		//execute the enabled tests
 		for(TestGroup tg : tests) {
@@ -93,7 +91,22 @@ public class GraalJSTestRunner {
 			executedTests.add(etg);
 			
 			for(Test t : tg.getTests()) {
-				etg.addTest(testInit.runTest(t));
+				
+				if(!arrayexclusionlist.containsKey(t.getTestName())) {
+					ExecutedTest et = testInit.runTest(t);
+					etg.addTest(et);
+					
+					if(et instanceof PassedTest) {
+						System.out.print(".");
+					} else if (et instanceof FailedTest) {
+						System.out.print("f");
+					} 
+				} else {
+					//in exclusion list, just add as unexecuted test for completeness
+					etg.addTest(t);
+					System.out.print(" ");
+				}
+				
 			}
 			
  		}

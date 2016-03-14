@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.dmnk.graalJSchakraTD.enums.FailReason;
-import org.dmnk.graalJSchakraTD.enums.TestType;
+import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.ResultExporter;
@@ -117,7 +117,30 @@ public class HTMLResultExporter implements ResultExporter {
 			+"</div>\n"
 			+"<div id=\"collapse%%TEST_ID%%_js\" class=\"panel-collapse collapse\">\n" //TODO: same id as href above
 			+"<div class=\"panel-body code\">\n"
-			+"<pre class=\"line-numbers\" data-src=\"%%FILE_LOCATION%%\" data-line=\"%%HIGHLIGHT_LINES%%\"></pre>\n"
+			+"<pre class=\"line-numbers\" data-src=\"test/%%FILE_LOCATION%%\"></pre>"// data-line=\"%%HIGHLIGHT_LINES%%\"></pre>\n"
+//			+"<pre class=\"line-numbers\" data-src=\"%%FILE_NAME%%\"></pre>\n"
+			+"</div>\n"
+			+"</div>\n"
+			+"</div>\n"
+			+"</div>\n";
+	
+	private final String htmlTestOutputPanel = 
+			"<!-- HTML TEST OUTPUT PANEL: %%FILE_NAME%% -->\n"
+			+"<div class=\"panel-group\">\n"
+			+"<div class=\"panel panel-default\">\n"
+			+"<div class=\"panel-heading\">\n"
+			+"<h4 class=\"panel-title\">\n"
+			+"<a data-toggle=\"collapse\" href=\"#collapse%%TEST_ID%%_op\">%%FILE_NAME%%</a>\n" //TODO: correct the href
+			+"<a href=\"%%FILE_LOCATION%%\" target=\"_blank\">\n"
+			+"<span class=\"glyphicon glyphicon-open-file\"></span>\n"
+			+"</a>\n"
+			+"</h4>\n"
+			+"</div>\n"
+			+"<div id=\"collapse%%TEST_ID%%_op\" class=\"panel-collapse collapse\">\n" //TODO: same id as href above
+			+"<div class=\"panel-body code\">\n"
+			+"<pre class=\"line-numbers\">"
+			+"<code>%%TEST_OUTPUT%%</code>"
+			+"</pre>\n"
 //			+"<pre class=\"line-numbers\" data-src=\"%%FILE_NAME%%\"></pre>\n"
 			+"</div>\n"
 			+"</div>\n"
@@ -159,7 +182,9 @@ public class HTMLResultExporter implements ResultExporter {
 	private final String phTestNr = "%%TESTNR%%"; //unique for the testgroup
 	private final String phTestID = "%%TEST_ID%%"; //unique for the whole html
 	private final String phFileName = "%%FILE_NAME%%";
+	private final String phFileLocation ="%%FILE_LOCATION%%";
 	private final String phStatus = "%%TEST_STATUS%%";
+	private final String phTestOutput = "%%TEST_OUTPUT%%";
 	
 	//DIAGRAM
 	private final String pctGreen ="%%PCT_PASSED%%";
@@ -199,7 +224,7 @@ public class HTMLResultExporter implements ResultExporter {
 			addGroupHeader(group);
 //			this.exportedTests = 0; //reset for every group?
 			for(Test test : group.getTests()) {
-				addTest(test);
+				addTest(test, group);
 			}
 			addGroupFooter();
 		}
@@ -245,11 +270,11 @@ public class HTMLResultExporter implements ResultExporter {
 		this.exportHTML.append(this.htmlTestGroupEnd);
 	}
 	
-	private void addTest(Test t) {
+	private void addTest(Test t, TestExecutedGroup teg) {
 		testID++;
 		StringBuilder testExport = new StringBuilder();
 		
-		String tempTest = this.htmlTestBegin.replaceAll(this.phTestName, t.getFilename());
+		String tempTest = this.htmlTestBegin.replaceAll(this.phTestName, t.getTestName());
 		tempTest = tempTest.replaceAll(this.phTestNr, ""+this.exportedTests++);
 		
 		String testHighlight;
@@ -263,22 +288,46 @@ public class HTMLResultExporter implements ResultExporter {
 		}
 		tempTest = tempTest.replaceAll(phStatus, statusClass.getOrDefault(testHighlight, new String(testHighlight + " not found!!")));
 		this.exportHTML.append(tempTest);
-		tempTest = htmlTestCodePanel.replaceAll(phFileName, t.getFilename());
+		
+		testExport.append(genTestSourcePanel(teg, t, testID));
+		
+		try {
+		testExport.append(genTestOutputPanel(t, testID));
+		} catch (java.lang.IllegalArgumentException e) {
+			//TODO: unexpected exception, investigate
+			System.err.println(t.getFilename()+ " \n ");
+		}
+		
+		testExport.append(htmlTestEnd);
+		this.exportHTML.append(testExport);
+	}
+	
+	private String genTestSourcePanel(TestExecutedGroup tg, Test t, int testID) {
+		String tempTest = htmlTestCodePanel.replaceAll(phFileName, t.getFilename());
 		tempTest = tempTest.replaceAll(phTestID, ""+testID);
 		
-		
-//		tempTest = tempTest.replaceAll(phFileLocation, new File(t.getFilename());
+		tempTest = tempTest.replaceAll(phFileLocation, tg.getGroupName() + "/" + t.getTestName());
 //		tempTest = tempTest.replaceAll(phFileLineNumbers, t.getErrorLines());
-		testExport.append(tempTest);
-		//TODO: Output/output diff
-		if(t.getTestType() == TestType.BASELINE) {
-//			tempTest = htmlTestCodePanel.replaceAll(phFileName, t.getDiffFile());
-	//		tempTest = tempTest.replaceAll(phFileLocation, ...);
-	//		tempTest = tempTest.replaceAll(phFileLineNumbers, "");
-			testExport.append(tempTest);
+		return tempTest;
+	}
+	
+	private String genTestOutputPanel(Test t, int testID) {
+		if(t instanceof ExecutedTest) {
+			String outputCode = "";
+			String tempCode = htmlTestOutputPanel.replaceAll(phFileName, t.getTestName());
+			ExecutedTest et = (ExecutedTest)t;
+			if(et instanceof FailedTest) {
+				FailedTest ft = (FailedTest) et;
+				
+				outputCode = "ERR:\n "+ft.getErrOut() + "\n";
+			}
+			outputCode += "OUT:\n " + et.getOutput();
+			System.out.println(outputCode);
+			tempCode = tempCode.replaceAll(phTestID, ""+testID);
+			tempCode = tempCode.replaceAll(phTestOutput, outputCode);
+			return tempCode;
 		}
-		testExport.append(htmlTestEnd);
-		this.exportHTML.append(tempTest);
+		else return "";
 	}
 	
 	private void writeResult() {

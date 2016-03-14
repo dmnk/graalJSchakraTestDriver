@@ -1,6 +1,5 @@
 package org.dmnk.graalJSchakraTD.test;
 
-import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 
@@ -8,7 +7,7 @@ public abstract class GraalJSExecutedTest extends GraalJSTest implements Execute
 
 //	private String output;
 //	private int returnCode;
-	private TestOutput tOut;
+	protected TestOutput tOut;
 	
 	public GraalJSExecutedTest(String testname, TestType tt, int returnCode, String output) {
 		super(testname, tt);
@@ -48,5 +47,6 @@ public abstract class GraalJSExecutedTest extends GraalJSTest implements Execute
 		assert tOut != null;
 		return tOut.getStdOut();
 	}
+	
 
 }

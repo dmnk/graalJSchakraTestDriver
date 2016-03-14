@@ -12,10 +12,12 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.time.chrono.JapaneseChronology;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.dmnk.graalJSchakraTD.Exceptions.GraalJSTestException;
-import org.dmnk.graalJSchakraTD.enums.TestType;
+import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
+import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestInitiator;
@@ -39,12 +41,14 @@ public class GraalJSTestInitiator implements TestInitiator {
 	
 	@Override
 	public ExecutedTest runTest(Test t) {
+//		System.err.println("Testing " + t.getTestName() + " as " +t.getTestType().toString());
 		//merge baseline and testfile
 		File mf = new File(t.getFilename());
 		//execute with graal
 		TestOutput to = executeGraalJS(mf);
+		
 		//decide, based on TestOutput.rc, erroroutput and stdout if and why and where it failed
-		if(passed(t, to)) {
+		if(TestType.passed(t, to)) {
 			PassedTest pt = new GraalJSPassedTest(t, to);
 			return pt;
 		} else {
@@ -53,36 +57,23 @@ public class GraalJSTestInitiator implements TestInitiator {
 			//add diff
 			//TODO: add diff at executedTest
 			String diff;
+			FailedTest ft;
+			FailReason fr = TestType.evaluate(t, to);
 			switch(t.getTestType()) {
 			case BASELINE:
-				break;
+				ft = new GraalJSFailedTest(t, to, FailReason.EXCEPTION);
+				return ft;
+//				break;
 			case PASSSTRING:
 				diff = duw.getDiff("Passed", to.getStdOut());
+				ft = new GraalJSFailedTest(t, to, FailReason.EXCEPTION); //TODO: just a placeholder
+				return ft;
+//				break;
+			default:
+				return new GraalJSFailedTest(t, to, FailReason.WARNING); //TODO: (unknown testtype exception)  or -> blow up testtype to validate "itself" <-
 			}
-		}
-		
-		return null;
-	}
-	
-	private boolean passed(Test t, TestOutput to) {
-		if(to.getReturnCode() != 0) {
-			return false;
-		} else if (!to.getErrOut().isEmpty()) {
-			return false;
-		} else {
-			switch(t.getTestType()) {
-			case BASELINE: 
-				//TODO: checks for fail/pass baseline testtype 
-				return true;
-			case PASSSTRING:
-				if(to.getStdOut().equals("Passed")) {
-					return true;
-				} else {
-					return false;
-				}
-			default: System.err.println("un-known / set testtype !"); 
-				return false;
-			}
+			//TODO: blow up the failed tests to contain failing lines
+			
 		}
 	}
 	
@@ -91,7 +82,7 @@ public class GraalJSTestInitiator implements TestInitiator {
 		File test = concatTestHarnes(t);
 		//execute test
 		TestOutput to = launchGraal(test);
-		
+		test.delete(); //remove the temporary concated file
 		
 		return to;
 	}
@@ -100,6 +91,8 @@ public class GraalJSTestInitiator implements TestInitiator {
 	 * @return the path to the combined file
 	 */
 	private File concatTestHarnes(File t) {
+		//TODO: check if harness file already exists & is newer than plain js file (skip execution otherwise)
+		//TODO: use alternative temp path to store harnessed js files
 		String harness = "WScript = {};\nWScript.Echo = print;\n";
 		
 		File nFile = new File(t.getAbsolutePath().replace(".js", ".HNS.js"));
@@ -142,9 +135,10 @@ public class GraalJSTestInitiator implements TestInitiator {
 	        while ((line = error.readLine()) != null) {
 	        	errOut += (line + '\n');
 	        }
-	       
 	        rc = p.waitFor();
+//	        rc = p.exitValue();
 	        input.close();
+	        error.close();
 	        }
 	    catch (Exception ex) {
 	        ex.printStackTrace();
@@ -158,7 +152,8 @@ public class GraalJSTestInitiator implements TestInitiator {
 		if(n.length() > 0 && n.charAt(n.length()-1) == '\n') {
 			n.deleteCharAt(n.length()-1);
 		}
-		return n.toString();
+		
+		return n.toString().trim();
 	}
 	
 	/** try a more condensed example */

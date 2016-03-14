@@ -1,6 +1,5 @@
 package org.dmnk.graalJSchakraTD.test;
 
-import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 

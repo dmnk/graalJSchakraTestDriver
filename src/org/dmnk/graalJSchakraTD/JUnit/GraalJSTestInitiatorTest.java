@@ -4,10 +4,10 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.test.GraalJSTest;
 import org.dmnk.graalJSchakraTD.test.GraalJSTestInitiator;
 import org.dmnk.graalJSchakraTD.test.TestOutput;
+import org.dmnk.graalJSchakraTD.test.TestType;
 import org.junit.Before;
 import org.junit.Test;
 

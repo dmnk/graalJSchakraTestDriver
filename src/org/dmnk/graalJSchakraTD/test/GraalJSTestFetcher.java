@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 
@@ -86,10 +85,24 @@ public class GraalJSTestFetcher implements TestFetcher {
 			String path = new File(f.getParent()).getName();
 			if(tg == null) {
 				tg = new GraalJSTestGroup(path);
+			}			
+			
+			if(baselineExists(f)) {
+				tg.addTest(new GraalJSTest(f.getPath(), TestType.BASELINE));
+			} else {
+				tg.addTest(new GraalJSTest(f.getPath(), TestType.PASSSTRING));
 			}
-			tg.addTest(new GraalJSTest(f.getName(), TestType.BASELINE));
 		}
 		return tg;
+	}
+	
+	private boolean baselineExists(File f) {
+		File baseline = new File(f.getPath().replace(".js", ".baseline"));
+		if(baseline.exists()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

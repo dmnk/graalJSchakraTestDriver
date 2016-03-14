@@ -1,6 +1,6 @@
 package org.dmnk.graalJSchakraTD.interfaces;
 
 public interface TestInitiator {
-	public Test runTest(Test t);
+	public ExecutedTest runTest(Test t);
 
 }

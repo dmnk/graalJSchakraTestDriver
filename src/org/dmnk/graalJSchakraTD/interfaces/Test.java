@@ -1,10 +1,12 @@
 package org.dmnk.graalJSchakraTD.interfaces;
 
-import org.dmnk.graalJSchakraTD.enums.TestType;
+import org.dmnk.graalJSchakraTD.test.TestType;
 
 public interface Test {
 	
 	public String getFilename();
+	
+	public String getTestName();
 	
 	/**
 	 * 

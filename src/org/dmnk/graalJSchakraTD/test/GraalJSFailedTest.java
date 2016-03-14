@@ -1,7 +1,6 @@
 package org.dmnk.graalJSchakraTD.test;
 
 import org.dmnk.graalJSchakraTD.enums.FailReason;
-import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 
@@ -17,10 +16,19 @@ public class GraalJSFailedTest extends GraalJSExecutedTest implements FailedTest
 		super(test, returnCode, output);
 		this.failReason = fr;
 	}
+	
+	public GraalJSFailedTest(Test test, TestOutput to, FailReason fr) {
+		super (test, to);
+		this.failReason = fr;
+	}
 
 	@Override
 	public FailReason getFailReason() {
 		return failReason;
 	}
 
+//	@Override
+	public String getErrOut() {
+		return tOut.getErrOut();
+	}
 }
