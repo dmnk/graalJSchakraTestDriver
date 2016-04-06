@@ -1,6 +1,6 @@
 package org.dmnk.graalJSchakraTD.interfaces;
 
-import org.dmnk.graalJSchakraTD.test.TestType;
+import org.dmnk.graalJSchakraTD.classes.TestType;
 
 public interface Test {
 	

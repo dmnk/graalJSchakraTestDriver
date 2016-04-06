@@ -1,4 +1,4 @@
-package org.dmnk.graalJSchakraTD.test;
+package org.dmnk.graalJSchakraTD.classes;
 
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;

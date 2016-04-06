@@ -1,13 +1,13 @@
-package org.dmnk.graalJSchakraTD.test;
+package org.dmnk.graalJSchakraTD.classes;
 
 import java.util.LinkedList;
 
+import org.dmnk.graalJSchakraTD.classes.GraalJSTestGroup;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
-import org.dmnk.graalJSchakraTD.test.GraalJSTestGroup;
 
 public class GraalJSTestExecutedGroup extends GraalJSTestGroup implements TestExecutedGroup {
 	private int passed =0, failed=0, warn=0, exception=0, crash=0, assertion=0, excluded=0, output;

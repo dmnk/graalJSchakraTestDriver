@@ -1,4 +1,4 @@
-package org.dmnk.graalJSchakraTD.Exceptions;
+package org.dmnk.graalJSchakraTD.exceptions;
 
 public class GraalJSTestException extends Exception {
 

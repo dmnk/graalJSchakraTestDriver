@@ -1,4 +1,4 @@
-package org.dmnk.graalJSchakraTD.test;
+package org.dmnk.graalJSchakraTD.classes;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,8 +14,8 @@ import java.time.chrono.JapaneseChronology;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.dmnk.graalJSchakraTD.Exceptions.GraalJSTestException;
 import org.dmnk.graalJSchakraTD.enums.FailReason;
+import org.dmnk.graalJSchakraTD.exceptions.GraalJSTestException;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
@@ -124,6 +124,7 @@ public class GraalJSTestInitiator implements TestInitiator {
 	    int rc = -99;
 	    
 	    try {
+	    	//TODO: use ProcessBuilder like described http://stackoverflow.com/questions/6811522/changing-the-working-directory-of-command-from-java
 	        Process p = Runtime.getRuntime().exec(cmdLine);
 	        BufferedReader input = new BufferedReader
 	            (new InputStreamReader(p.getInputStream()));
@@ -135,7 +136,15 @@ public class GraalJSTestInitiator implements TestInitiator {
 	        while ((line = error.readLine()) != null) {
 	        	errOut += (line + '\n');
 	        }
-	        rc = p.waitFor();
+	        
+	        //TODO: make timeout configurable
+	        if(p.waitFor(5, TimeUnit.SECONDS)) {
+	        	rc = p.exitValue();
+	        } else {
+	        	p.destroy();
+	        	rc = -2;
+	        }
+	        	
 //	        rc = p.exitValue();
 	        input.close();
 	        error.close();

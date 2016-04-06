@@ -1,13 +1,13 @@
-package org.dmnk.graalJSchakraTD.JUnit;
+package org.dmnk.graalJSchakraTD.classes;
 
 import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.dmnk.graalJSchakraTD.test.GraalJSTest;
-import org.dmnk.graalJSchakraTD.test.GraalJSTestInitiator;
-import org.dmnk.graalJSchakraTD.test.TestOutput;
-import org.dmnk.graalJSchakraTD.test.TestType;
+import org.dmnk.graalJSchakraTD.classes.GraalJSTest;
+import org.dmnk.graalJSchakraTD.classes.GraalJSTestInitiator;
+import org.dmnk.graalJSchakraTD.classes.TestOutput;
+import org.dmnk.graalJSchakraTD.classes.TestType;
 import org.junit.Before;
 import org.junit.Test;
 

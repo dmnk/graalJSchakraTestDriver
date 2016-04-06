@@ -1,4 +1,4 @@
-package org.dmnk.graalJSchakraTD.test;
+package org.dmnk.graalJSchakraTD.classes;
 
 public class TestOutput {
 	private int returnCode;

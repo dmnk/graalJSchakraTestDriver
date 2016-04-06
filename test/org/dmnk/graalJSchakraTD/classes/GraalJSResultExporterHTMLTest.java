@@ -1,4 +1,4 @@
-package org.dmnk.graalJSchakraTD.JUnit;
+package org.dmnk.graalJSchakraTD.classes;
 
 import static org.junit.Assert.*;
 
@@ -6,14 +6,14 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.dmnk.graalJSchakraTD.classes.GraalJSFailedTest;
+import org.dmnk.graalJSchakraTD.classes.GraalJSPassedTest;
+import org.dmnk.graalJSchakraTD.classes.GraalJSTest;
+import org.dmnk.graalJSchakraTD.classes.GraalJSTestExecutedGroup;
+import org.dmnk.graalJSchakraTD.classes.HTMLResultExporter;
+import org.dmnk.graalJSchakraTD.classes.TestType;
 import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
-import org.dmnk.graalJSchakraTD.test.GraalJSFailedTest;
-import org.dmnk.graalJSchakraTD.test.GraalJSPassedTest;
-import org.dmnk.graalJSchakraTD.test.GraalJSTest;
-import org.dmnk.graalJSchakraTD.test.GraalJSTestExecutedGroup;
-import org.dmnk.graalJSchakraTD.test.HTMLResultExporter;
-import org.dmnk.graalJSchakraTD.test.TestType;
 import org.junit.Before;
 import org.junit.Test;
 

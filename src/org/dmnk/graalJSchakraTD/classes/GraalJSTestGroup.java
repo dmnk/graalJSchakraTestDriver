@@ -1,4 +1,4 @@
-package org.dmnk.graalJSchakraTD.test;
+package org.dmnk.graalJSchakraTD.classes;
 
 import java.util.LinkedList;
 import java.util.List;

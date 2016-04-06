@@ -1,4 +1,4 @@
-package org.dmnk.graalJSchakraTD.test;
+package org.dmnk.graalJSchakraTD.classes;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.dmnk.graalJSchakraTD.Exceptions.GraalJSTestException;
+import org.dmnk.graalJSchakraTD.exceptions.GraalJSTestException;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
@@ -30,7 +30,7 @@ public class GraalJSTestRunner {
 	public static void main(String[] args) {
 		
 		String graalJSpath = "../../GraalVM-0.10/bin/js";
-		String chakraTestsPath = "../../GraalVM-0.10/chakraTests/test/Array";
+		String chakraTestsPath = "../../GraalVM-0.10/chakraTests/test/";
 		//TODO: parameter parser
 		
 		GraalJSTestRunner ctr = new GraalJSTestRunner();
@@ -85,8 +85,33 @@ public class GraalJSTestRunner {
 		arrayexclusionlist.put("CopyOnAccessArray_cache_index_overflow.js", 1);
 		crashlist.put("Array", arrayexclusionlist);
 		
+		Map<String, Integer> folderList = new HashMap<String, Integer>();
+		folderList.put("Array", 0);
+		folderList.put("Basics", 0);
+		folderList.put("Closures", 0);
+		folderList.put("ControlFlow", 0);
+		folderList.put("Date", 0);
+		
+		String mode = "WL"; //BL
+		
 		//execute the enabled tests
 		for(TestGroup tg : tests) {
+			if(tg == null) {
+				continue;
+				//actually, that shouldn't happen
+			}
+			switch (mode) {
+			case "WL":
+				if(!folderList.containsKey(tg.getGroupName())) {
+					continue;
+				}
+				break ;
+			case "BL":
+				if(folderList.containsKey(tg.getGroupName())) {
+					continue;
+				}
+				break;				
+			}
 			TestExecutedGroup etg = new GraalJSTestExecutedGroup(tg.getGroupName());
 			executedTests.add(etg);
 			

@@ -1,12 +1,12 @@
-package org.dmnk.graalJSchakraTD.JUnit;
+package org.dmnk.graalJSchakraTD.classes;
 
 import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.dmnk.graalJSchakraTD.classes.GraalJSTestFetcher;
 import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
-import org.dmnk.graalJSchakraTD.test.GraalJSTestFetcher;
 import org.junit.Before;
 import org.junit.Test;
 
