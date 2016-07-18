@@ -57,6 +57,7 @@ public class HTMLResultExporter implements ResultExporter {
 			+ "\t<div class=\"container-fluid\">\n"
 			+ "<h1>graal-JS executing MS-ChakraCore tests: Results</h1>\n"
 			+ "<h2>Test-Results:</h2>\n"
+			+"<a href=\"#\" onclick=\"$('#accordion .panel-collapse').collapse('hide');\">Close-All</a>"
 			+ "\t<div class=\"panel-group\" id=\"accordion\">\n";
 	
 	private final String htmlTestGroupStart =
