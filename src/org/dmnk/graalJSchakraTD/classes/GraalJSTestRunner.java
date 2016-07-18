@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.dmnk.graalJSchakraTD.classes.export.HTMLResultExporter;
+import org.dmnk.graalJSchakraTD.classes.export.TextResultExporter;
 import org.dmnk.graalJSchakraTD.exceptions.GraalJSTestException;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
