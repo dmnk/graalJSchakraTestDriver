@@ -61,12 +61,22 @@ public class GraalJSTestInitiator implements TestInitiator {
 			FailReason fr = TestType.evaluate(t, to);
 			switch(t.getTestType()) {
 			case BASELINE:
-				ft = new GraalJSFailedTest(t, to, FailReason.EXCEPTION);
+				if(to.getErrOut().length()>0) {
+					ft = new GraalJSFailedTest(t, to, FailReason.EXCEPTION);
+				} else {
+					ft = new GraalJSFailedTest(t, to, FailReason.OUTPUT);
+				}
 				return ft;
 //				break;
 			case PASSSTRING:
 				diff = duw.getDiff("Passed", to.getStdOut());
-				ft = new GraalJSFailedTest(t, to, FailReason.EXCEPTION); //TODO: just a placeholder
+				
+				//TODO: just a placeholder, more elaborated failreason detections!
+				if(to.getErrOut().length()>0) {
+					ft = new GraalJSFailedTest(t, to, FailReason.EXCEPTION);
+				} else {
+					ft = new GraalJSFailedTest(t, to, FailReason.OUTPUT);
+				}
 				return ft;
 //				break;
 			default:
@@ -94,6 +104,12 @@ public class GraalJSTestInitiator implements TestInitiator {
 		//TODO: check if harness file already exists & is newer than plain js file (skip execution otherwise)
 		//TODO: use alternative temp path to store harnessed js files
 		String harness = "WScript = {};\nWScript.Echo = print;\n";
+		harness += "var BufferedReader = java.io.BufferedReader; \n var File = java.io.File;\n "
+				+ "var FileReader = java.io.FileReader; \n function loadScriptFile(fileName) {\n"
+				+ " try { \n var reader = new FileReader(new File(fileName));\n var bufferedReader = new BufferedReader(reader);"
+				+ "var line;\n var code; \n while ((line = bufferedReader.readLine()) != null) {"
+				+ " code += line '\n'; \n }\n  eval(code); } catch(e) { \n print('file not found')\n"
+				+ " } if (reader) { reader.close(); } \n } \n WScript.loadScriptFile = evalFile;";
 		
 		File nFile = new File(t.getAbsolutePath().replace(".js", ".HNS.js"));
 		List <String> test;
@@ -125,7 +141,10 @@ public class GraalJSTestInitiator implements TestInitiator {
 	    
 	    try {
 	    	//TODO: use ProcessBuilder like described http://stackoverflow.com/questions/6811522/changing-the-working-directory-of-command-from-java
-	        Process p = Runtime.getRuntime().exec(cmdLine);
+	    	ProcessBuilder pb = new ProcessBuilder(graalJS.getAbsolutePath(), test.getAbsolutePath());
+	    	pb.directory(test.getParentFile());
+	    	Process p = pb.start();
+//	        Process p = Runtime.getRuntime().exec(cmdLine);
 	        BufferedReader input = new BufferedReader
 	            (new InputStreamReader(p.getInputStream()));
 	        BufferedReader error = new BufferedReader
