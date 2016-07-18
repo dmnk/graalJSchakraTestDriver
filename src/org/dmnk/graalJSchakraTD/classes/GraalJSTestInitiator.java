@@ -103,13 +103,16 @@ public class GraalJSTestInitiator implements TestInitiator {
 	private File concatTestHarnes(File t) {
 		//TODO: check if harness file already exists & is newer than plain js file (skip execution otherwise)
 		//TODO: use alternative temp path to store harnessed js files
+		//NOTE: the JS-extensions are defined here https://github.com/Microsoft/ChakraCore/blob/master/bin/ch/WScriptJsrt.cpp
+		// and https://github.com/Microsoft/ChakraCore/blob/master/lib/Runtime/Base/ScriptContext.cpp # 1740
 		String harness = "WScript = {};\nWScript.Echo = print;\n";
 		harness += "var BufferedReader = java.io.BufferedReader; \n var File = java.io.File;\n "
 				+ "var FileReader = java.io.FileReader; \n function loadScriptFile(fileName) {\n"
 				+ " try { \n var reader = new FileReader(new File(fileName));\n var bufferedReader = new BufferedReader(reader);"
 				+ "var line;\n var code; \n while ((line = bufferedReader.readLine()) != null) {"
-				+ " code += line '\n'; \n }\n  eval(code); } catch(e) { \n print('file not found')\n"
-				+ " } if (reader) { reader.close(); } \n } \n WScript.loadScriptFile = evalFile;";
+				+ " code += line; \n }\n  eval.call(this, code); execScript(code); } catch(e) { \n print('file not found')\n"
+				+ " } if (reader) { reader.close(); } \n } \n WScript.loadScriptFile = loadScriptFile;";
+//		+ " } if (reader) { reader.close(); } \n } \n WScript.loadScriptFile = evalFile;";
 		
 		File nFile = new File(t.getAbsolutePath().replace(".js", ".HNS.js"));
 		List <String> test;
