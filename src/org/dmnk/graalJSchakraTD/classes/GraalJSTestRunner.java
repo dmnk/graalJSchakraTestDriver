@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.dmnk.graalJSchakraTD.classes.Configuration.ExecutableMode;
 import org.dmnk.graalJSchakraTD.classes.configProvider.CLIConfigProvider;
 import org.dmnk.graalJSchakraTD.classes.export.HTMLResultExporter;
 import org.dmnk.graalJSchakraTD.classes.export.TextResultExporter;
@@ -22,8 +23,6 @@ import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
 import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 
 public class GraalJSTestRunner {
-//	private String graalPath;
-//	private String chakraPath;
 	private List<ResultExporter> resExp;
 	private List<TestGroup> tests;
 	private List<TestExecutedGroup> executedTests;
@@ -34,24 +33,26 @@ public class GraalJSTestRunner {
 		
 		Configuration conf = new CLIConfigProvider(args).getConfig();
 		
-		String graalJSpath = "../../GraalVM-0.10/bin/js";
-		String chakraTestsPath = "../../GraalVM-0.10/chakraTests/test/";
-		//TODO: parameter parser
+		conf.setGraalJSexec(Configuration.ExecutableMode.DIRECT, "../../GraalVM-0.10/bin/js");
+		conf.setChakraTestsPath("../../GraalVM-0.10/chakraTests/test/");
+		conf.addExport("html", "./data/htmlResult.html");
+		conf.addExport("csv", "./data/FailPass.csv");
 		
 		GraalJSTestRunner ctr = new GraalJSTestRunner();
 		try {
-			ResultExporter hre = new HTMLResultExporter("./data/htmlResult.html");
-			ResultExporter tre = new TextResultExporter("./data/FailPass.csv");
-			TestInitiator ti = new GraalJSTestInitiator(graalJSpath);
-			TestFetcher tf = new GraalJSTestFetcher(chakraTestsPath);
-			
-//			ctr.setGraalPath("./../bin/js");
-//			ctr.setChakraPath("./chakraTests/test");
-			
+			if(conf.checkExport("html")) {
+				ResultExporter hre = new HTMLResultExporter(conf.getExport("html"));
+				ctr.addResultExporter(hre);
+			}
+			if (conf.checkExport("csv")) {
+				ResultExporter tre = new TextResultExporter(conf.getExport("csv"));
+//				ctr.addResultExporter(tre);
+			}
+			TestInitiator ti = new GraalJSTestInitiator(conf.getGraalJSexec());
+			TestFetcher tf = new GraalJSTestFetcher(conf.getChakraTestsPath());
+						
 			ctr.setTestInitiator(ti);
 			ctr.setTestFetcher(tf);
-			ctr.addResultExporter(hre);
-//			ctr.addResultExporter(tre);
 			ctr.run(args);
 		} catch (GraalJSTestException e) {
 			System.err.println(e.getMessage());
@@ -66,11 +67,11 @@ public class GraalJSTestRunner {
 	}
 	
 	private void addResultExporter(ResultExporter re) {
-		this.resExp.add(re);
+		resExp.add(re);
 	}
 	
 	private void setTestInitiator(TestInitiator ti) {
-		this.testInit = ti;
+		testInit = ti;
 	}
 	
 	private void setTestFetcher(TestFetcher tf) {
