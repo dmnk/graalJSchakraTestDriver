@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.dmnk.graalJSchakraTD.classes.configProvider.CLIConfigProvider;
 import org.dmnk.graalJSchakraTD.classes.export.HTMLResultExporter;
 import org.dmnk.graalJSchakraTD.classes.export.TextResultExporter;
 import org.dmnk.graalJSchakraTD.exceptions.GraalJSTestException;
@@ -30,6 +31,8 @@ public class GraalJSTestRunner {
 	private TestFetcher tf;
 
 	public static void main(String[] args) {
+		
+		Configuration conf = new CLIConfigProvider(args).getConfig();
 		
 		String graalJSpath = "../../GraalVM-0.10/bin/js";
 		String chakraTestsPath = "../../GraalVM-0.10/chakraTests/test/";
@@ -89,10 +92,10 @@ public class GraalJSTestRunner {
 		
 		Map<String, Integer> folderList = new HashMap<String, Integer>();
 		folderList.put("Array", 0);
-		folderList.put("Basics", 0);
-		folderList.put("Closures", 0);
-		folderList.put("ControlFlow", 0);
-		folderList.put("Date", 0);
+//		folderList.put("Basics", 0);
+//		folderList.put("Closures", 0);
+//		folderList.put("ControlFlow", 0);
+//		folderList.put("Date", 0);
 		
 		String mode = "WL"; //BL
 		
