@@ -6,10 +6,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import org.dmnk.graalJSchakraTD.classes.Configuration;
+import org.dmnk.graalJSchakraTD.classes.Configuration.ExecutableMode;
+import org.dmnk.graalJSchakraTD.classes.Configuration.HarnessMode;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Categories.ExcludeCategory;
 
 public class CLIConfigProviderTests {
 
@@ -37,12 +38,12 @@ public class CLIConfigProviderTests {
 	}
 
 	@Test
-	public void testHelpParameter() {
+	public void testHelpParameter() throws Exception {
 		String[] args = new String[1];
 		args[0] = new String("-h");
 		
 		cp = new CLIConfigProvider(args);
-		Configuration c = cp.getConfig();
+		cp.getConfig();
 
 		assertTrue(outContent.toString().contains("-- usage: --"));
 	}
@@ -90,4 +91,130 @@ public class CLIConfigProviderTests {
 		Configuration c = cp.getConfig();
 		c.getWhiteList();
 	}
+	
+	@Test
+	public void testAddOneExport() throws Exception {
+		String[] args = new String[1];
+		args[0] = new String("-exp=text#/tmp/result.txt");
+		
+		cp = new CLIConfigProvider(args);
+		Configuration c = cp.getConfig();
+		assertTrue(c.checkExport("text"));
+		assertEquals(c.getExport("text"), "/tmp/result.txt");
+	}
+	
+	@Test
+	public void testAddTwoExports() throws Exception {
+		String[] args = new String[2];
+		args[0] = new String("-exp=text#/tmp/result.txt");
+		args[1] = new String("-exp=html#/tmp/result.html");
+		
+		cp = new CLIConfigProvider(args);
+		Configuration c = cp.getConfig();
+		assertTrue(c.checkExport("text"));
+		assertEquals(c.getExport("text"), "/tmp/result.txt");
+		assertTrue(c.checkExport("html"));
+		assertEquals(c.getExport("html"), "/tmp/result.html");
+	}
+		
+	@Test
+	public void testGetGraalJSexecModeDirect() throws Exception {
+		String[] args = new String[2];
+		args[0] = new String("-execMode=d");
+		args[1] = new String("-exec=../../GraalVM-0.10/bin/js");
+		
+		cp = new CLIConfigProvider(args);
+		Configuration c = cp.getConfig();
+		assertEquals(c.getExecMode(), ExecutableMode.DIRECT);
+		assertEquals(c.getExec(), "../../GraalVM-0.10/bin/js");
+	}
+	
+	@Test
+	public void testGetGraalJSexecModeIndirect() throws Exception {
+		String[] args = new String[2];
+		args[0] = new String("-execMode=i");
+		args[1] = new String("-exec=jjs");
+		
+		cp = new CLIConfigProvider(args);
+		Configuration c = cp.getConfig();
+		assertEquals(ExecutableMode.INDIRECT, c.getExecMode());
+		assertEquals(c.getExec(), "jjs");
+	}
+	
+	@Test(expected=Exception.class)
+	public void testGetGraalJSexecModeUnknown() throws Exception {
+		String[] args = new String[2];
+		args[0] = new String("-execMode=b");
+		args[1] = new String("-exec=jjs");
+		
+		cp = new CLIConfigProvider(args);
+		cp.getConfig();
+	}
+	
+	@Test
+	public void testGrayList() throws Exception {
+		String[] args = new String[1];
+		args[0] = new String("-g=someList.txt");
+		
+		cp = new CLIConfigProvider(args);
+		Configuration c = cp.getConfig();
+		assertEquals(c.getGrayList(), "someList.txt");
+	}
+
+	@Test
+	public void testHarnessModeInject() throws Exception {
+		String[] args = new String[2];
+		args[0] = new String("-hnsMode=i");
+		args[1] = new String("-hnsFile=ChakraHarness.js");
+		
+		cp = new CLIConfigProvider(args);
+		Configuration c = cp.getConfig();
+		assertEquals(HarnessMode.INCLUDE, c.getHarnessMode());
+		assertEquals(c.getHarnessFile(), "ChakraHarness.js");
+	}
+	
+	@Test
+	public void testHarnessModeParameter() throws Exception {
+		String[] args = new String[2];
+		args[0] = new String("-hnsMode=p");
+		args[1] = new String("-hnsFile=ChakraHarness.js");
+		
+		cp = new CLIConfigProvider(args);
+		Configuration c = cp.getConfig();
+		assertEquals(HarnessMode.PARAMETER, c.getHarnessMode());
+		assertEquals(c.getHarnessFile(), "ChakraHarness.js");
+	}
+	
+	@Test(expected=Exception.class)
+	public void testHarnessModeUnknown() throws Exception {
+		String[] args = new String[2];
+		args[0] = new String("-hnsMode=unknown");
+		args[1] = new String("-hnsFile=ChakraHarness.js");
+		
+		cp = new CLIConfigProvider(args);
+		cp.getConfig();
+	}
+
+	@Test //TODO
+	public void testHarnessPredeliveredFile() throws Exception {
+		String[] args = new String[2];
+		args[0] = new String("-hnsMode=d");
+		args[1] = new String("-exec=jjs");
+		
+		cp = new CLIConfigProvider(args);
+		Configuration c = cp.getConfig();
+		assertEquals(ExecutableMode.INDIRECT, c.getExecMode());
+		assertEquals(c.getExec(), "jjs");
+	}
+	
+	@Test
+	public void testTestsPath() throws Exception {
+		String[] args = new String[1];
+		args[0] = new String("-t=/somewhere/the/tests/must/lie_;)");
+		
+		cp = new CLIConfigProvider(args);
+		Configuration c = cp.getConfig();
+		assertEquals(c.getTestsPath(), "/somewhere/the/tests/must/lie_;)");
+	}
+	
 }

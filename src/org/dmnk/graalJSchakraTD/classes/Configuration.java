@@ -7,7 +7,7 @@ public class Configuration {
 	private String graalJSexec;
 	private ExecutableMode graalJSexecMode;
 	
-	private String chakraTestsPath;
+	private String testsPath;
 	/**
 	 * 1st string = type of export
 	 * 2nd string = place to put the file
@@ -84,21 +84,21 @@ public class Configuration {
 		graalJSexec = exec;
 	}
 	
-	public String getGraalJSexec() {
+	public String getExec() {
 		return graalJSexec;
 	}
 	
-	public ExecutableMode getGraalJSExecMode() {
+	public ExecutableMode getExecMode() {
 		return graalJSexecMode;
 	}
 	
-/*  CHAKRA TESTS PATH */
-	public void setChakraTestsPath(String path) {
-		chakraTestsPath = path;
+/*  TESTS PATH */
+	public void setTestsPath(String path) {
+		testsPath = path;
 	}
 	
-	public String getChakraTestsPath() {
-		return chakraTestsPath;
+	public String getTestsPath() {
+		return testsPath;
 	}
 	
 /* HARNESS SETUP */
@@ -121,7 +121,7 @@ public class Configuration {
 	}
 	
 	public static enum HarnessMode {
-		INTERNAL, INCLUDE, PARAMETER;
+		INCLUDE, PARAMETER;
 	}
 	
 	public static enum ListMode {
