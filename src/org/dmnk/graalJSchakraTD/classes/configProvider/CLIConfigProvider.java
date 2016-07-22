@@ -5,7 +5,8 @@ import java.util.HashMap;
 import org.dmnk.graalJSchakraTD.classes.Configuration;
 
 /**
- * 
+ * parses the arguments provided at the CLI and returns a Configuration object  
+ * <br><br>
  * of course it would be way better if the config would consist of
  * plugins, where each of those would register it's own help message
  * and handle, so that the help and progress would be split.
@@ -14,10 +15,6 @@ import org.dmnk.graalJSchakraTD.classes.Configuration;
  * @see http://commons.apache.org/cli/ 
  */
 public class CLIConfigProvider {
-//	private String blacklistFile;
-//	private int modeBlackWhite = 0;
-//	private String whitelistFile;
-//	private String executable = "jjs";
 	
 	private String args[];
 	
@@ -37,21 +34,25 @@ public class CLIConfigProvider {
 	}
 	
 	public Configuration getConfig() {
-		this.fetch(args);
+		this.process(args);
 		return c;
 	}
 	
-	public void fetch(String[] args) {
+	private void process(String[] args) {
 		
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
 			
-			switch (arg.toLowerCase().split("=")[0]) {
+			String params[] = arg.split("=");
+			
+			switch (params[0]) {
+			case "-m":
 			case "-mode":
-				handleBWList("mode", arg);
+				handleBWList("mode", params[1]);
 				break;
+			case "-l":
 			case "-list":
-				handleBWList("list", arg);
+				handleBWList("list", params[1]);
 				break;
 			case "-exec":
 //				handleExec(arg);
@@ -96,6 +97,7 @@ public class CLIConfigProvider {
 	 */
 	private void handleBWList(String item, String value) {
 		switch (item) {
+		case "m":
 		case "mode":
 			handleBWListModeEntry(item, value);
 			break;
@@ -142,7 +144,7 @@ public class CLIConfigProvider {
 	 */
 	private void insertBWListToConfig(String mode, String list) {
 		switch(mode) {
-		case "m":
+		case "b":
 			c.setBlackList(list);
 			break;
 		case "w":

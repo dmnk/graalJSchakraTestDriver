@@ -45,12 +45,20 @@ public class Configuration {
 		return listMode;
 	}
 	
-	public String getWhiteList() {
-		return list;
+	public String getWhiteList() throws Exception {
+		if(listMode == ListMode.WHITE) {
+			return list;
+		} else {
+			throw new Exception ("Tried to fetch whitelist, mode is " + listMode.toString());
+		}
 	}
 	
-	public String getBlackList() {
-		return list;
+	public String getBlackList() throws Exception {
+		if(listMode == ListMode.BLACK) {
+			return list;
+		} else {
+			throw new Exception ("Tried to fetch blacklist, mode is " + listMode.toString());
+		}
 	}
 	
 	public String getGrayList() {
