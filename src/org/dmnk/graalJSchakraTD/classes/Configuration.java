@@ -7,6 +7,13 @@ public class Configuration {
 	private String graalJSexec;
 	private ExecutableMode graalJSexecMode;
 	
+	/**
+	 * signals the environment that during reading
+	 * the config, something came up, or was missed
+	 * which wasn't a exception. (like called just the help)
+	 */
+	private Boolean readyToExec;
+	
 	private String testsPath;
 	/**
 	 * 1st string = type of export
@@ -24,6 +31,15 @@ public class Configuration {
 	
 	public Configuration() {
 		exports = new HashMap<String,String>();
+		readyToExec = true;
+	}
+	
+	public void notReadyToExec() {
+		readyToExec = false;
+	}
+	
+	public Boolean readyToExec() {
+		return readyToExec;
 	}
 	
 /* WHITE / GRAY / BLACKLISTS */

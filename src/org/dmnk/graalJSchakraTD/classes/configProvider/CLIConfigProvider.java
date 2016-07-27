@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.dmnk.graalJSchakraTD.classes.Configuration;
 import org.dmnk.graalJSchakraTD.classes.Configuration.ExecutableMode;
 import org.dmnk.graalJSchakraTD.classes.Configuration.HarnessMode;
+import org.dmnk.graalJSchakraTD.interfaces.ConfigurationProviderInterface;
 
 /**
  * parses the arguments provided at the CLI and returns a Configuration object  
@@ -16,7 +17,7 @@ import org.dmnk.graalJSchakraTD.classes.Configuration.HarnessMode;
  * to match that, even the cli handling should be more sophisticated like:
  * @see http://commons.apache.org/cli/ 
  */
-public class CLIConfigProvider {
+public class CLIConfigProvider implements ConfigurationProviderInterface {
 	
 	private String args[];
 	
@@ -30,11 +31,12 @@ public class CLIConfigProvider {
 		c = new Configuration();
 	}
 	
-	public CLIConfigProvider(String args[], Configuration conf) {
-		this(args);
-		c = conf;
-	}
+//	public CLIConfigProvider(String args[]) {
+//		this(args);
+//		c = new Configuration;
+//	}
 	
+	@Override
 	public Configuration getConfig() throws Exception {
 		this.process(args);
 		return c;
@@ -86,6 +88,7 @@ public class CLIConfigProvider {
 			case "--help":
 			case "-?":
 				printHelp();
+				c.notReadyToExec();
 				break;
 			default:
 				StringBuilder error = new StringBuilder();
@@ -352,5 +355,10 @@ public class CLIConfigProvider {
 		System.out.println("-t=directory");
 		System.out.println("\t Path to the directory where the tests are stored");
 		
+	}
+
+	@Override
+	public void workOn(Configuration conf) {
+		c = conf;		
 	}
 }
