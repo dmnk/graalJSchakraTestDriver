@@ -83,6 +83,7 @@ public class HTMLResultExporter implements ResultExporter {
 	            +"<thead>"
 	             + "<tr>"
 	                +"<th class=\"col-md-1\">#</th>"
+	                +"<th class=\"col-md-1\">Result</th>"
 	                +"<th class=\"col-md-1\">Name</th>"
 	                +"<th class=\"col-md-7\">Files</th>"
 	              +"</tr>"
@@ -100,7 +101,7 @@ public class HTMLResultExporter implements ResultExporter {
 	private final String htmlTestBegin =
 			"<!-- HTML TEST BEGIN -->\n"
 			+"\t\t<tr class=\"%%TEST_STATUS%%\">\n"
-			+ "\t\t\t<td>%%TESTNR%%<span class=\"label label-default\">output</span></td>\n"
+			+ "\t\t\t<td>%%TESTNR%%</td><td><span class=\"label label-default\">%%RESULT%%</span></td>\n"
 			+ "\t\t\t<td>%%TESTNAME%%</td>\n"
 			+ "\t\t\t<td class=\"code-container\">\n";
 	
@@ -173,6 +174,8 @@ public class HTMLResultExporter implements ResultExporter {
 			+"<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js\"></script>"
 			+"<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js\" integrity=\"sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS\" crossorigin=\"anonymous\"></script>"
 			+"<script src=\"js/prism.js\"></script>"
+	        +"<script src=\"//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.9.1/bootstrap-table.min.js\"></script>"
+	        +"<script src=\"//rawgit.com/akottr/dragtable/master/jquery.dragtable.js\"></script>"
 			+"</body>"
 			+"</html>";
 	
@@ -186,6 +189,7 @@ public class HTMLResultExporter implements ResultExporter {
 	private final String phFileLocation ="%%FILE_LOCATION%%";
 	private final String phStatus = "%%TEST_STATUS%%";
 	private final String phTestOutput = "%%TEST_OUTPUT%%";
+	private final String phResult = "%%RESULT%%"; //what was the outcome
 	
 	//DIAGRAM
 	private final String pctGreen ="%%PCT_PASSED%%";
@@ -288,6 +292,7 @@ public class HTMLResultExporter implements ResultExporter {
 			testHighlight = "excluded";
 		}
 		tempTest = tempTest.replaceAll(phStatus, statusClass.getOrDefault(testHighlight, new String(testHighlight + " not found!!")));
+		tempTest = tempTest.replace(phResult, testHighlight);
 		this.exportHTML.append(tempTest);
 		
 		testExport.append(genTestSourcePanel(teg, t, testID));
