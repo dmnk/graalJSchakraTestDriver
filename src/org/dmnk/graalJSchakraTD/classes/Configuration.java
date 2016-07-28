@@ -29,9 +29,12 @@ public class Configuration {
 	
 	private String graylist;
 	
+	private int verbosity;
+	
 	public Configuration() {
 		exports = new HashMap<String,String>();
 		readyToExec = true;
+		verbosity = 0;
 	}
 	
 	public void notReadyToExec() {
@@ -40,6 +43,14 @@ public class Configuration {
 	
 	public Boolean readyToExec() {
 		return readyToExec;
+	}
+	
+	public void setVerbosity (int level) {
+		verbosity = level;
+	}
+	
+	public int getVerbosity () {
+		return verbosity;
 	}
 	
 /* WHITE / GRAY / BLACKLISTS */

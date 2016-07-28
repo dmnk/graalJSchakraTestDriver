@@ -82,7 +82,7 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 			case "-v":
 			case "-vv":
 			case "-vvv":
-//				setVerbosity(arg);
+				setVerbosity(arg);
 				break;
 			case "-h":
 			case "--help":
@@ -109,6 +109,10 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 //		if(modeBlackWhite > 0 && (blacklistFile == null && whitelistFile == null)) {
 //			throw new ConfigProviderException(2, "mode set to black/whitelist, but nothing provided");
 //		}
+	}
+	
+	private void setVerbosity(String v) {
+		c.setVerbosity(v.length()-1);
 	}
 	
 	private void handleTests(String tests) {
@@ -354,6 +358,9 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 		
 		System.out.println("-t=directory");
 		System.out.println("\t Path to the directory where the tests are stored");
+
+		System.out.println("-v");
+		System.out.println("\t enable debug outputs");
 		
 	}
 
