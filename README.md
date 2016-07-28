@@ -12,17 +12,22 @@ Right now it looks like the test-driver will be available to execute arbitrary t
     - syntax & line-number highlightning for the test and diff files [prism.js](http://prismjs.com/download.html)
 - [x] use github ;-)
 - [x] fetching the tests in provided base-directory
-- [ ] in/excluding tests based on white/blacklists
-- [ ] excluding tests known to crash the VM based on a additional "crashlist"
+- [x] in/excluding tests based on white/blacklists
+- [x] excluding tests known to crash the VM based on a additional "crashlist"
 - [x] executing the tests
 - [ ] determine the fail reason / line
 - [x] exporting the results
   - different formats (html & fail/pass filename only)
   - text should be ready
+ - [x] configuration
+  	- through cli
+  	- defaults out of a class
+  	- stackable, so more configuration providers can be added 
 - [x] JUnit tests for
 	- TestFetcher
 	- HTMLResultExporter
 	- TestInitiator
+	- CLIConfigProvider
   
 ## get the open-sourced JS tests from ms chakra core project
 ```
