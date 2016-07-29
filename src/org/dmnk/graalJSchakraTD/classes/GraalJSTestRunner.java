@@ -116,7 +116,7 @@ public class GraalJSTestRunner {
 		}
 		if (conf.checkExport("csv")) {
 			ResultExporter tre = new TextResultExporter(conf.getExport("csv"));
-//			ctr.addResultExporter(tre);
+			addResultExporter(tre);
 		}
 	}
 	
@@ -181,9 +181,7 @@ public class GraalJSTestRunner {
 					etg.addTest(t);
 					System.out.print(" ");
 				}
-				
 			}
-			
  		}
 		
 		//export the result
