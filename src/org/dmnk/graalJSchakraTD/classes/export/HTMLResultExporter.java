@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
@@ -141,7 +142,7 @@ public class HTMLResultExporter implements ResultExporter {
 			+"<div id=\"collapse%%TEST_ID%%_op\" class=\"panel-collapse collapse\">\n" //TODO: same id as href above
 			+"<div class=\"panel-body code\">\n"
 			+"<pre class=\"line-numbers\">"
-			+"<code>%%TEST_OUTPUT%%</code>"
+			+"<code class=\"language-diff\">%%TEST_OUTPUT%%</code>"
 			+"</pre>\n"
 //			+"<pre class=\"line-numbers\" data-src=\"%%FILE_NAME%%\"></pre>\n"
 			+"</div>\n"
@@ -283,6 +284,7 @@ public class HTMLResultExporter implements ResultExporter {
 		tempTest = tempTest.replaceAll(this.phTestNr, ""+this.exportedTests++);
 		
 		String testHighlight;
+		
 		if(t instanceof FailedTest) {
 			FailedTest ft = (FailedTest) t;
 			testHighlight = ft.getFailReason().toString();
@@ -291,17 +293,16 @@ public class HTMLResultExporter implements ResultExporter {
 		} else {
 			testHighlight = "excluded";
 		}
+		
 		tempTest = tempTest.replaceAll(phStatus, statusClass.getOrDefault(testHighlight, new String(testHighlight + " not found!!")));
 		tempTest = tempTest.replace(phResult, testHighlight);
+		
 		this.exportHTML.append(tempTest);
 		
 		testExport.append(genTestSourcePanel(teg, t, testID));
 		
-		try {
-		testExport.append(genTestOutputPanel(t, testID));
-		} catch (java.lang.IllegalArgumentException e) {
-			//TODO: unexpected exception, investigate
-			System.err.println(t.getFilename()+ " \n ");
+		if(t instanceof FailedTest) {
+			testExport.append(genTestOutputPanel(t, testID));
 		}
 		
 		testExport.append(htmlTestEnd);
@@ -325,12 +326,22 @@ public class HTMLResultExporter implements ResultExporter {
 			if(et instanceof FailedTest) {
 				FailedTest ft = (FailedTest) et;
 				
-				outputCode = "ERR:\n "+ft.getErrOut() + "\n";
+				if (ft.getErrOut().length() > 0) {
+					outputCode = "ERR:\n "+ft.getErrOut() + "\n";
+				}
+				if (ft.diffIsSet()) {
+					outputCode += ft.getDiff();
+				} else {
+					outputCode += "OUT:\n " + et.getOutput();
+				}
 			}
-			outputCode += "OUT:\n " + et.getOutput();
-			System.out.println(outputCode);
+			
 			tempCode = tempCode.replaceAll(phTestID, ""+testID);
-			tempCode = tempCode.replaceAll(phTestOutput, outputCode);
+			
+			//as sometimes there are $'s in the output code (inline classes), which would be treated as regex
+			// and would further throw an IllegalArgumentException 
+			tempCode = tempCode.replaceAll(phTestOutput, Matcher.quoteReplacement(outputCode));
+			
 			return tempCode;
 		}
 		else return "";
