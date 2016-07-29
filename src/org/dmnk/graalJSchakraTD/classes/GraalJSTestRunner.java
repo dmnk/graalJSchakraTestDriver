@@ -99,7 +99,7 @@ public class GraalJSTestRunner {
 	private void setup(String[] args) throws GraalJSTestException {
 		setupConfig(args);
 
-		TestInitiator ti = new GraalJSTestInitiator(conf.getExec());
+		TestInitiator ti = new GraalJSTestInitiator(conf);
 		TestFetcher tf = new GraalJSTestFetcher(conf.getTestsPath());
 		ListFetcher lf = new GraalJSListFetcher(conf);
 					

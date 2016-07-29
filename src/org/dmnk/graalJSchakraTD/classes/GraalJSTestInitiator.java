@@ -14,6 +14,7 @@ import java.time.chrono.JapaneseChronology;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.dmnk.graalJSchakraTD.classes.Configuration.ExecutableMode;
 import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.exceptions.GraalJSTestException;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
@@ -26,24 +27,29 @@ public class GraalJSTestInitiator implements TestInitiator {
 
 	private File graalJS;
 	private DiffUtilsWrapper duw;
+	private Configuration c;
 	
-	public GraalJSTestInitiator (String graalExecutablePath) throws GraalJSTestException {
-		graalJS = new File(graalExecutablePath);
-		duw = new DiffUtilsWrapper();
-		
-		if(!graalJS.isFile()) {
-			throw new GraalJSTestException("provided graalJS location doesn't point to executable js: \n\t"+graalExecutablePath);
+	public GraalJSTestInitiator (Configuration conf) throws GraalJSTestException {
+		c = conf;
+		graalJS = new File(c.getExec());
+		if(c.getExecMode() == ExecutableMode.DIRECT) {
+			if(!graalJS.isFile()) {
+				throw new GraalJSTestException("provided graalJS location doesn't point to executable js: \n\t"+graalJS);
+			}
 		}
+
 		if(!graalJS.canExecute()) {
 			throw new GraalJSTestException("can't execute the provided graalJS binary, check rights?");
 		}
+		duw = new DiffUtilsWrapper();
+		
 	}
 	
 	@Override
 	public ExecutedTest runTest(Test t) {
-//		System.err.println("Testing " + t.getTestName() + " as " +t.getTestType().toString());
 		//merge baseline and testfile
 		File mf = new File(t.getFilename());
+		
 		//execute with graal
 		TestOutput to = executeGraalJS(mf);
 		
@@ -53,18 +59,18 @@ public class GraalJSTestInitiator implements TestInitiator {
 			return pt;
 		} else {
 			//check failreason;
-			
-			//add diff
 			//TODO: add diff at executedTest
 			String diff;
 			FailedTest ft;
 			FailReason fr = TestType.evaluate(t, to);
 			switch(t.getTestType()) {
 			case BASELINE:
+				diff = Helper.getDiff(t, to);
+				
 				if(to.getErrOut().length()>0) {
-					ft = new GraalJSFailedTest(t, to, FailReason.EXCEPTION);
+					ft = new GraalJSFailedTest(t, to, FailReason.EXCEPTION, diff);
 				} else {
-					ft = new GraalJSFailedTest(t, to, FailReason.OUTPUT);
+					ft = new GraalJSFailedTest(t, to, FailReason.OUTPUT, diff);
 				}
 				return ft;
 //				break;
