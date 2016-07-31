@@ -1,6 +1,7 @@
 package org.dmnk.graalJSchakraTD.classes;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
@@ -11,18 +12,13 @@ public enum TestType {
 	
 	public static FailReason evaluate(Test t, TestOutput to) {
 		if(to.getErrOut().contains("Assert")) return FailReason.ASSERTION;
+		if(to.getErrOut().length()>0) return FailReason.EXCEPTION;
+		
 		if(!to.getErrOut().isEmpty()) return FailReason.WARNING;
 		
 		return FailReason.OUTPUT;
-//		switch(t.getTestType()) {
-//		case BASELINE:
-//			return FailReason.OUTPUT;
-//		case PASSSTRING:
-//			if()
+		//if execution aborted:
 //			return FailReason.CRASH;
-//		default:
-//			return FailReason.OUTPUT;
-//		}
 	}
 	
 	public static boolean passed (Test t, TestOutput to) {
@@ -33,9 +29,13 @@ public enum TestType {
 		} else {
 			switch(t.getTestType()) {
 			case BASELINE: 
-				return Helper.simpleBaselineCompare(new File(t.getBaseline()), to.getStdOut());
-				//TODO: checks for fail/pass baseline testtype 
-				//return false;
+				try {
+					return Helper.simpleBaselineCompare(new File(t.getBaseline()), to.getStdOut());
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.err.println("TT: baseline file not found: "+t.getBaseline());
+					return false;
+				}
 			case PASSSTRING:
 				if(to.getStdOut().toLowerCase().equals("passed") 
 						|| to.getStdOut().toLowerCase().equals("pass")) {
