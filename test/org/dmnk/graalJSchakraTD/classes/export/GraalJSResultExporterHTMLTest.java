@@ -1,4 +1,4 @@
-package org.dmnk.graalJSchakraTD.classes;
+package org.dmnk.graalJSchakraTD.classes.export;
 
 import static org.junit.Assert.*;
 
@@ -10,7 +10,7 @@ import org.dmnk.graalJSchakraTD.classes.GraalJSFailedTest;
 import org.dmnk.graalJSchakraTD.classes.GraalJSPassedTest;
 import org.dmnk.graalJSchakraTD.classes.GraalJSTest;
 import org.dmnk.graalJSchakraTD.classes.GraalJSTestExecutedGroup;
-import org.dmnk.graalJSchakraTD.classes.HTMLResultExporter;
+import org.dmnk.graalJSchakraTD.classes.export.HTMLResultExporter;
 import org.dmnk.graalJSchakraTD.classes.TestType;
 import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
