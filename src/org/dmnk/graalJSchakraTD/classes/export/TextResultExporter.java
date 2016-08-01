@@ -17,6 +17,7 @@ public class TextResultExporter implements ResultExporter {
 	private StringBuilder exportTXT;
 	
 	public TextResultExporter(String path) {
+		exportTXT = new StringBuilder();
 		this.exportPath = path;
 	}
 	

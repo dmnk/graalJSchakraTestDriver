@@ -1,5 +1,5 @@
-#Array
-#Basics
-#Closures
-#ControlFlow
+Array
+Basics
+Closures
+ControlFlow
 Date

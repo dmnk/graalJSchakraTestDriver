@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
+import org.dmnk.graalJSchakraTD.classes.Configuration.ExecutableMode;
 import org.dmnk.graalJSchakraTD.classes.GraalJSTest;
 import org.dmnk.graalJSchakraTD.classes.GraalJSTestInitiator;
 import org.dmnk.graalJSchakraTD.classes.TestOutput;
@@ -15,7 +16,9 @@ public class GraalJSTestInitiatorTest {
 	private GraalJSTestInitiator ti;
 	@Before
 	public void setUp() throws Exception {
-		ti = new GraalJSTestInitiator("../../GraalVM-0.10/bin/js");
+		Configuration c = new Configuration();
+		c.setGraalJSexec(ExecutableMode.DIRECT, "../../GraalVM-0.10/bin/js");
+		ti = new GraalJSTestInitiator(c);
 	}
 
 	@Test
