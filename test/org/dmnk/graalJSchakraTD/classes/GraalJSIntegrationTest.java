@@ -20,7 +20,7 @@ public class GraalJSIntegrationTest {
 	}
 
 	@Test
-	public void test() {
+	public void smokeTest() {
 		GraalJSTestRunner gtr = new GraalJSTestRunner();
 	}
 

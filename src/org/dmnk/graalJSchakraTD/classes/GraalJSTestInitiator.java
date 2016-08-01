@@ -22,7 +22,6 @@ import org.dmnk.graalJSchakraTD.interfaces.TestInitiator;
 public class GraalJSTestInitiator implements TestInitiator {
 
 	private File graalJS;
-	private DiffUtilsWrapper duw;
 	private Configuration c;
 	
 	public GraalJSTestInitiator (Configuration conf) throws GraalJSTestException {
@@ -36,9 +35,7 @@ public class GraalJSTestInitiator implements TestInitiator {
 
 		if(!graalJS.canExecute()) {
 			throw new GraalJSTestException("can't execute the provided graalJS binary, check rights?");
-		}
-		duw = new DiffUtilsWrapper();
-		
+		}		
 	}
 	
 	@Override
@@ -55,37 +52,29 @@ public class GraalJSTestInitiator implements TestInitiator {
 			return pt;
 		} else {
 			//check failreason;
-			//TODO: add diff at executedTest
 			String diff;
 			FailedTest ft;
 			FailReason fr = TestType.evaluate(t, to);
 			switch(t.getTestType()) {
 			case BASELINE:
-				diff = Helper.getDiff(t, to);
+				diff = DiffUtilsWrapper.getDiff(t, to);
 				
-				if(to.getErrOut().length()>0) {
-					ft = new GraalJSFailedTest(t, to, FailReason.EXCEPTION, diff);
-				} else {
-					ft = new GraalJSFailedTest(t, to, FailReason.OUTPUT, diff);
-				}
+				ft = new GraalJSFailedTest(t, to, fr, diff);
+				
 				return ft;
 //				break;
 			case PASSSTRING:
-				diff = duw.getDiff("Passed", to.getStdOut());
+//				diff = DiffUtilsWrapper.getDiff("Passed", to.getStdOut());
+				// no need to evaluate the exact diff to the pass-string, right?
+				// but maybe the testtype should be visible in the result output?
 				
-				//TODO: just a placeholder, more elaborated failreason detections!
-				if(to.getErrOut().length()>0) {
-					ft = new GraalJSFailedTest(t, to, FailReason.EXCEPTION);
-				} else {
-					ft = new GraalJSFailedTest(t, to, FailReason.OUTPUT);
-				}
+				ft = new GraalJSFailedTest(t, to, fr);
 				return ft;
 //				break;
 			default:
-				return new GraalJSFailedTest(t, to, FailReason.WARNING); //TODO: (unknown testtype exception)  or -> blow up testtype to validate "itself" <-
-			}
-			//TODO: blow up the failed tests to contain failing lines
-			
+				return new GraalJSFailedTest(t, to, fr); 
+				//TODO: (unknown testtype exception)  or -> blow up testtype to validate "itself" <-
+			}			
 		}
 	}
 	
@@ -127,8 +116,8 @@ public class GraalJSTestInitiator implements TestInitiator {
 			}
 			pw.close();
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.err.println("GJTI-Problem :" + e.getMessage());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -137,7 +126,7 @@ public class GraalJSTestInitiator implements TestInitiator {
 	}
 	
 	public TestOutput launchGraal(File test) {
-		String cmdLine = graalJS + " " +test.getAbsolutePath();
+//		String cmdLine = graalJS + " " +test.getAbsolutePath();
  	    String line;
 	    String sysOut = "";
 	    String errOut = "";
