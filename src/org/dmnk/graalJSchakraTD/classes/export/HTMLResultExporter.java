@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.dmnk.graalJSchakraTD.enums.FailReason;
-import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.ResultExporter;
@@ -104,11 +103,11 @@ public class HTMLResultExporter implements ResultExporter {
 			+"\t\t<tr class=\"%%TEST_STATUS%%\">\n"
 			+ "\t\t\t<td>%%TESTNR%%</td><td><span class=\"label label-default\">%%RESULT%%</span></td>\n"
 			+ "\t\t\t<td>%%TESTNAME%%</td>\n"
-			+ "\t\t\t<td class=\"code-container\">\n";
+			+ "\t\t\t<td class=\"code-container\">\n"
+			+ "<div class=\"panel-group\">\n";
 	
 	private final String htmlTestCodePanel = 
 			"<!-- HTML TEST CODE PANEL: %%FILE_NAME%% -->\n"
-			+"<div class=\"panel-group\">\n"
 			+"<div class=\"panel panel-default\">\n"
 			+"<div class=\"panel-heading\">\n"
 			+"<h4 class=\"panel-title\">\n"
@@ -124,12 +123,11 @@ public class HTMLResultExporter implements ResultExporter {
 //			+"<pre class=\"line-numbers\" data-src=\"%%FILE_NAME%%\"></pre>\n"
 			+"</div>\n"
 			+"</div>\n"
-			+"</div>\n"
 			+"</div>\n";
 	
 	private final String htmlTestOutputPanel = 
 			"<!-- HTML TEST OUTPUT PANEL: %%FILE_NAME%% -->\n"
-			+"<div class=\"panel-group\">\n"
+//			+"<div class=\"panel-group\">\n"
 			+"<div class=\"panel panel-default\">\n"
 			+"<div class=\"panel-heading\">\n"
 			+"<h4 class=\"panel-title\">\n"
@@ -146,7 +144,7 @@ public class HTMLResultExporter implements ResultExporter {
 			+"</pre>\n"
 //			+"<pre class=\"line-numbers\" data-src=\"%%FILE_NAME%%\"></pre>\n"
 			+"</div>\n"
-			+"</div>\n"
+//			+"</div>\n"
 			+"</div>\n"
 			+"</div>\n";
 //	<!-- / SRC -->
@@ -167,7 +165,8 @@ public class HTMLResultExporter implements ResultExporter {
 //	</div>
 //	<!--  / DIFF -->
 	private final String htmlTestEnd = 
-			"</td>"
+			"</div>"
+			+ "</td>"
 			+"</tr>";
 	
 	private final String htmlFooter =
@@ -302,7 +301,7 @@ public class HTMLResultExporter implements ResultExporter {
 		testExport.append(genTestSourcePanel(teg, t, testID));
 		
 		if(t instanceof FailedTest) {
-			testExport.append(genTestOutputPanel(t, testID));
+			testExport.append(genTestOutputPanel((FailedTest) t, testID));
 		}
 		
 		testExport.append(htmlTestEnd);
@@ -310,41 +309,35 @@ public class HTMLResultExporter implements ResultExporter {
 	}
 	
 	private String genTestSourcePanel(TestExecutedGroup tg, Test t, int testID) {
-		String tempTest = htmlTestCodePanel.replaceAll(phFileName, t.getFilename());
+		String tempTest = htmlTestCodePanel.replaceAll(phFileName, t.getTestName());
 		tempTest = tempTest.replaceAll(phTestID, ""+testID);
 		
 		tempTest = tempTest.replaceAll(phFileLocation, tg.getGroupName() + "/" + t.getTestName());
-//		tempTest = tempTest.replaceAll(phFileLineNumbers, t.getErrorLines());
+//		TODO: tempTest = tempTest.replaceAll(phFileLineNumbers, t.getErrorLines());
 		return tempTest;
 	}
-	
-	private String genTestOutputPanel(Test t, int testID) {
-		if(t instanceof ExecutedTest) {
-			String outputCode = "";
-			String tempCode = htmlTestOutputPanel.replaceAll(phFileName, t.getTestName());
-			ExecutedTest et = (ExecutedTest)t;
-			if(et instanceof FailedTest) {
-				FailedTest ft = (FailedTest) et;
-				
-				if (ft.getErrOut().length() > 0) {
-					outputCode = "ERR:\n "+ft.getErrOut() + "\n";
-				}
-				if (ft.diffIsSet()) {
-					outputCode += ft.getDiff();
-				} else {
-					outputCode += "OUT:\n " + et.getOutput();
-				}
-			}
+		
+	private String genTestOutputPanel(FailedTest ft, int testID) {
+		
+		String outputCode = "";
+		String tempCode ="" ;
 			
-			tempCode = tempCode.replaceAll(phTestID, ""+testID);
-			
-			//as sometimes there are $'s in the output code (inline classes), which would be treated as regex
-			// and would further throw an IllegalArgumentException 
-			tempCode = tempCode.replaceAll(phTestOutput, Matcher.quoteReplacement(outputCode));
-			
-			return tempCode;
+		if (ft.getErrOut().length() > 0) {
+			tempCode = htmlTestOutputPanel.replaceAll(phFileName, "ERR-out");
+			tempCode = tempCode.replaceAll(phTestID, "e_"+testID);
+			outputCode += tempCode.replaceAll(phTestOutput, Matcher.quoteReplacement(ft.getErrOut()));
 		}
-		else return "";
+		if (ft.diffIsSet()) {
+			tempCode = htmlTestOutputPanel.replaceAll(phFileName, "DIFF");
+			tempCode = tempCode.replaceAll(phTestID, "d_"+testID);
+			outputCode += tempCode.replaceAll(phTestOutput, Matcher.quoteReplacement(ft.getDiff()));
+		} else if (ft.getOutput().length() > 0){
+			tempCode = htmlTestOutputPanel.replace(phFileName, "STD-out");
+			tempCode = tempCode.replaceAll(phTestID, "s_"+testID);
+			outputCode += tempCode.replaceAll(phTestOutput, Matcher.quoteReplacement(ft.getOutput()));
+		}
+
+		return outputCode;
 	}
 	
 	private void writeResult() {
