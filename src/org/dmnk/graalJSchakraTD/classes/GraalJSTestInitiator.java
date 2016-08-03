@@ -96,7 +96,20 @@ public class GraalJSTestInitiator implements TestInitiator {
 		//TODO: use alternative temp path to store harnessed js files
 		//NOTE: the JS-extensions are defined here https://github.com/Microsoft/ChakraCore/blob/master/bin/ch/WScriptJsrt.cpp
 		// and https://github.com/Microsoft/ChakraCore/blob/master/lib/Runtime/Base/ScriptContext.cpp # 1740
-		String harness = "WScript = {};\nWScript.Echo = print;\n";
+		String helperFunction = "GJCTHelper = {}\n"
+				+"GJCTHelper.load = function(filename) {\n"
+				+"try{load(filename)}\n"
+				+"catch (e) {\n"
+//				+"print(e);"
+				+" load(filename.replace(/String.fromCharCode(0x5C)/g,\"/\"))\n"
+				+"}\n"
+				+"}\n";
+
+		
+		String harness = helperFunction + "WScript = {};\nWScript.Echo = print;\n"
+				+ "WScript.LoadScriptFile = load;\n"
+				+ "WScript.LoadModuleFile = load;\n"
+				+ "WScript.Arguments = new Array();\n";
 //		harness += "var BufferedReader = java.io.BufferedReader; \n var File = java.io.File;\n "
 //				+ "var FileReader = java.io.FileReader; \n function loadScriptFile(fileName) {\n"
 //				+ " try { \n var reader = new FileReader(new File(fileName));\n var bufferedReader = new BufferedReader(reader);"
@@ -105,6 +118,7 @@ public class GraalJSTestInitiator implements TestInitiator {
 //				+ " } if (reader) { reader.close(); } \n } \n WScript.loadScriptFile = loadScriptFile;";
 		
 		File nFile = new File(t.getAbsolutePath().replace(".js", ".HNS.js"));
+//		new TemporaryFile
 		List <String> test;
 		
 		try {
