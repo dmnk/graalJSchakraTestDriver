@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.dmnk.graalJSchakraTD.classes.Configuration.ExecutableMode;
+import org.dmnk.graalJSchakraTD.classes.Configuration.HarnessMode;
 import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.exceptions.GraalJSTestException;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
@@ -79,11 +80,17 @@ public class GraalJSTestInitiator implements TestInitiator {
 	}
 	
 	public TestOutput executeGraalJS(File t) {
-		//combine test and harness
-		File test = concatTestHarnes(t);
-		//execute test
-		TestOutput to = launchGraal(test);
-		test.delete(); //remove the temporary concated file
+		TestOutput to;
+		
+		//combine test and harness ? 
+		if(c.getHarnessMode() == HarnessMode.INCLUDE) {
+			File test;
+			test = (c.getHarnessMode() == HarnessMode.INCLUDE) ? concatTestHarnes(t) : t;
+			to = launchGraal(test);
+			test.delete(); 
+		} else {
+			to = launchGraal(t);
+		}
 		
 		return to;
 	}
@@ -148,7 +155,13 @@ public class GraalJSTestInitiator implements TestInitiator {
 	    
 	    try {
 	    	//TODO: use ProcessBuilder like described http://stackoverflow.com/questions/6811522/changing-the-working-directory-of-command-from-java
-	    	ProcessBuilder pb = new ProcessBuilder(graalJS.getAbsolutePath(), test.getAbsolutePath());
+	    	ProcessBuilder pb;
+	    	if(c.getHarnessMode() == HarnessMode.PARAMETER) {
+	    		pb = new ProcessBuilder(graalJS.getAbsolutePath(), c.getHarnessFile(), test.getAbsolutePath());
+	    	} else {
+	    		pb = new ProcessBuilder(graalJS.getAbsolutePath(), test.getAbsolutePath());
+	    	}
+	    	
 	    	pb.directory(test.getParentFile());
 	    	Process p = pb.start();
 //	        Process p = Runtime.getRuntime().exec(cmdLine);
