@@ -55,6 +55,7 @@ public class TextResultExporter implements ResultExporter {
 		} else {
 			text.append("excluded");
 		}
+		this.exportTXT.append(text + "\n");
 	}
 	
 	private void writeResult() {
@@ -62,6 +63,7 @@ public class TextResultExporter implements ResultExporter {
 			PrintWriter pw = new PrintWriter(this.exportPath, "UTF-8");
 			pw.print(this.exportTXT);
 			pw.close();
+			System.out.println("exporter results as text in file "+this.exportPath);
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
