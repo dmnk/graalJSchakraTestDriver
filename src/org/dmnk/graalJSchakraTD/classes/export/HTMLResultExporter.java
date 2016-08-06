@@ -279,7 +279,7 @@ public class HTMLResultExporter implements ResultExporter {
 		testID++;
 		StringBuilder testExport = new StringBuilder();
 		
-		String tempTest = this.htmlTestBegin.replaceAll(this.phTestName, t.getTestName());
+		String tempTest = this.htmlTestBegin.replaceAll(this.phTestName, t.getTestName().concat(" - type: " + t.getTestType()));
 		tempTest = tempTest.replaceAll(this.phTestNr, ""+this.exportedTests++);
 		
 		String testHighlight;
@@ -345,6 +345,8 @@ public class HTMLResultExporter implements ResultExporter {
 			PrintWriter pw = new PrintWriter(this.exportPath, "UTF-8");
 			pw.print(this.exportHTML);
 			pw.close();
+			
+			System.out.println("exporter results as HTML in file "+this.exportPath);
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
