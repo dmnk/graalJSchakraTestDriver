@@ -147,14 +147,15 @@ public class GraalJSTestRunner {
 	
 
 	private void run() {
-		//check preconditions (propably in the constructors of TestFetcher, TestRunner, ...)
-
 		//execute the enabled tests
-		for(TestGroup tg : tests) {
+		for(TestGroup tg : tests) {			
 			if(tg == null) {
 				continue;
 				//actually, that shouldn't happen
+				// but it does, however this keeps it running
+				// TODO: investigate where the null groups come from
 			}
+			System.out.println("\nGroup: "+tg.getGroupName());
 			
 			//check if folder is black- / whitelisted
 			if(!groupActive(tg)) {
