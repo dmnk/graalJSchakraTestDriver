@@ -97,7 +97,15 @@ public class GraalJSTestFetcher implements TestFetcher {
 	}
 	
 	private boolean baselineExists(File f) {
-		File baseline = new File(f.getPath().replace(".js", ".baseline"));
+		StringBuilder baseLinePath = new StringBuilder (f.getPath().substring(0, f.getPath().length()-2));
+		baseLinePath.append("baseline");
+//		File baseline = new File(f.getPath().replace(".js", ".baseline"));
+		File baseline = new File(baseLinePath.toString());
+//		if(f.getName().contains("FailToSetLength")){
+//			int i = 1+f.getName().length();
+//			i=i+2;
+//			//debug jump in
+//		}
 		if(baseline.exists()) {
 			return true;
 		} else {
