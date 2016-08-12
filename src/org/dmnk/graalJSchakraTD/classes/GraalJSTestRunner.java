@@ -1,5 +1,6 @@
 package org.dmnk.graalJSchakraTD.classes;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +19,6 @@ import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.ListFetcher;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.ResultExporter;
-import org.dmnk.graalJSchakraTD.interfaces.TestInitiator;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
@@ -30,7 +30,6 @@ public class GraalJSTestRunner {
 	private List<TestExecutedGroup> executedTests;
 	private Map<String, HashMap<String, Integer>> crashlist;
 	private Map<String, Integer> folderList;
-	private TestInitiator testInit;
 	private TestFetcher tf;
 	private ListFetcher lf;
 	private Configuration conf;
@@ -84,10 +83,6 @@ public class GraalJSTestRunner {
 		resExp.add(re);
 	}
 	
-	private void setTestInitiator(TestInitiator ti) {
-		testInit = ti;
-	}
-	
 	private void setTestFetcher(TestFetcher tf) {
 		this.tf = tf;
 	}
@@ -99,11 +94,9 @@ public class GraalJSTestRunner {
 	private void setup(String[] args) throws GraalJSTestException {
 		setupConfig(args);
 
-		TestInitiator ti = new GraalJSTestInitiator(conf);
 		TestFetcher tf = new GraalJSTestFetcher(conf.getTestsPath());
 		ListFetcher lf = new GraalJSListFetcher(conf);
-					
-		setTestInitiator(ti);
+
 		setTestFetcher(tf);
 		setListFetcher(lf);
 		
@@ -146,7 +139,7 @@ public class GraalJSTestRunner {
 	}
 	
 
-	private void run() {
+	private void run() throws GraalJSTestException {
 		//execute the enabled tests
 		for(TestGroup tg : tests) {			
 			if(tg == null) {
@@ -166,10 +159,13 @@ public class GraalJSTestRunner {
 			TestExecutedGroup etg = new GraalJSTestExecutedGroup(tg.getGroupName());
 			executedTests.add(etg);
 			
-			for(Test t : tg.getTests()) {
-				//check if file is graylisted
+			for(Test t : tg.getTests()) { //TODO: future this ;)
 				if(fileActive(tg, t)) {
-					ExecutedTest et = testInit.runTest(t);
+					GenericTestExecutor gte = new GenericTestExecutor(conf);
+					
+					TestOutput to = gte.launch(new File(t.getFilename()));
+					ExecutedTest et = TestType.determineTestResult(t, to);
+					
 					etg.addTest(et);
 					
 					if(et instanceof PassedTest) {
