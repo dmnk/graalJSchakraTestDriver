@@ -20,6 +20,11 @@ import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestInitiator;
 
+/**
+ * @deprecated
+ * @author Dominik
+ *
+ */
 public class GraalJSTestInitiator implements TestInitiator {
 
 	private File graalJS;
@@ -27,18 +32,12 @@ public class GraalJSTestInitiator implements TestInitiator {
 	
 	public GraalJSTestInitiator (Configuration conf) throws GraalJSTestException {
 		c = conf;
-		graalJS = new File(c.getExec());
-		if(c.getExecMode() == ExecutableMode.DIRECT) {
-			if(!graalJS.isFile()) {
-				throw new GraalJSTestException("provided graalJS location doesn't point to executable js: \n\t"+graalJS);
-			}
-		}
-
-		if(!graalJS.canExecute()) {
-			throw new GraalJSTestException("can't execute the provided graalJS binary, check rights?");
-		}		
+			
 	}
 	
+	/**
+	 * @deprecated
+	 */
 	@Override
 	public ExecutedTest runTest(Test t) {
 		//merge baseline and testfile
@@ -79,18 +78,30 @@ public class GraalJSTestInitiator implements TestInitiator {
 		}
 	}
 	
+	/**
+	 * @deprecated
+	 * @param t
+	 * @return
+	 */
 	public TestOutput executeGraalJS(File t) {
-		TestOutput to;
+		TestOutput to = null;
 		
 		//combine test and harness ? 
-		if(c.getHarnessMode() == HarnessMode.INCLUDE) {
-			File test;
-			test = (c.getHarnessMode() == HarnessMode.INCLUDE) ? concatTestHarnes(t) : t;
-			to = launchGraal(test);
-			test.delete(); 
-		} else {
-			to = launchGraal(t);
+//		if(c.getHarnessMode() == HarnessMode.INCLUDE) {
+//			File test;
+//			test = (c.getHarnessMode() == HarnessMode.INCLUDE) ? concatTestHarnes(t) : t;
+//			to = launchGraal(test);
+//			test.delete(); 
+//		} else {
+		GenericTestExecutor gte;
+		try {
+			gte = new GenericTestExecutor(c);
+			to = gte.launch(t);
+		} catch (GraalJSTestException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+//		}
 		
 		return to;
 	}
@@ -98,111 +109,53 @@ public class GraalJSTestInitiator implements TestInitiator {
 	/**
 	 * @return the path to the combined file
 	 */
-	private File concatTestHarnes(File t) {
-		//TODO: check if harness file already exists & is newer than plain js file (skip execution otherwise)
-		//TODO: use alternative temp path to store harnessed js files
-		//NOTE: the JS-extensions are defined here https://github.com/Microsoft/ChakraCore/blob/master/bin/ch/WScriptJsrt.cpp
-		// and https://github.com/Microsoft/ChakraCore/blob/master/lib/Runtime/Base/ScriptContext.cpp # 1740
-		String helperFunction = "GJCTHelper = {}\n"
-				+"GJCTHelper.load = function(filename) {\n"
-				+"try{load(filename)}\n"
-				+"catch (e) {\n"
-//				+"print(e);"
-				+" load(filename.replace(/String.fromCharCode(0x5C)/g,\"/\"))\n"
-				+"}\n"
-				+"}\n";
-
-		
-		String harness = helperFunction + "WScript = {};\nWScript.Echo = print;\n"
-				+ "WScript.LoadScriptFile = load;\n"
-				+ "WScript.LoadModuleFile = load;\n"
-				+ "WScript.Arguments = new Array();\n";
-//		harness += "var BufferedReader = java.io.BufferedReader; \n var File = java.io.File;\n "
-//				+ "var FileReader = java.io.FileReader; \n function loadScriptFile(fileName) {\n"
-//				+ " try { \n var reader = new FileReader(new File(fileName));\n var bufferedReader = new BufferedReader(reader);"
-//				+ "var line;\n var code; \n while ((line = bufferedReader.readLine()) != null) {"
-//				+ " code += line; \n }\n  eval.call(this, code); execScript(code); } catch(e) { \n print('file not found')\n"
-//				+ " } if (reader) { reader.close(); } \n } \n WScript.loadScriptFile = loadScriptFile;";
-		
-		File nFile = new File(t.getAbsolutePath().replace(".js", ".HNS.js"));
-//		new TemporaryFile
-		List <String> test;
-		
-		try {
-			PrintWriter pw = new PrintWriter(nFile, "UTF-8");
-			test = java.nio.file.Files.readAllLines(t.toPath(), java.nio.charset.StandardCharsets.UTF_8);
-			pw.print(harness);
-			for(String line : test) {
-				pw.println(line);
-			}
-			pw.close();
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			System.err.println("GJTI-Problem :" + e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return nFile;
-	}
-	
-	public TestOutput launchGraal(File test) {
-//		String cmdLine = graalJS + " " +test.getAbsolutePath();
- 	    String line;
-	    String sysOut = "";
-	    String errOut = "";
-	    int rc = -99;
-	    
-	    try {
-	    	//TODO: use ProcessBuilder like described http://stackoverflow.com/questions/6811522/changing-the-working-directory-of-command-from-java
-	    	ProcessBuilder pb;
-	    	if(c.getHarnessMode() == HarnessMode.PARAMETER) {
-	    		pb = new ProcessBuilder(graalJS.getAbsolutePath(), c.getHarnessFile(), test.getAbsolutePath());
-	    	} else {
-	    		pb = new ProcessBuilder(graalJS.getAbsolutePath(), test.getAbsolutePath());
-	    	}
-	    	
-	    	pb.directory(test.getParentFile());
-	    	Process p = pb.start();
-//	        Process p = Runtime.getRuntime().exec(cmdLine);
-	        BufferedReader input = new BufferedReader
-	            (new InputStreamReader(p.getInputStream()));
-	        BufferedReader error = new BufferedReader
-        		(new InputStreamReader(p.getErrorStream()));
-	        while ((line = input.readLine()) != null) {
-	            sysOut += (line + '\n');
-	        }
-	        while ((line = error.readLine()) != null) {
-	        	errOut += (line + '\n');
-	        }
-	        
-	        //TODO: make timeout configurable
-	        if(p.waitFor(5, TimeUnit.SECONDS)) {
-	        	rc = p.exitValue();
-	        } else {
-	        	p.destroy();
-	        	rc = -2;
-	        }
-	        	
-//	        rc = p.exitValue();
-	        input.close();
-	        error.close();
-	        }
-	    catch (Exception ex) {
-	        ex.printStackTrace();
-	    }
-	    
-	    return new TestOutput(rc, removeTrailingNewline(sysOut), removeTrailingNewline(errOut));
-	}
-	
-	private String removeTrailingNewline(String old) {
-		StringBuilder n = new StringBuilder(old);
-		if(n.length() > 0 && n.charAt(n.length()-1) == '\n') {
-			n.deleteCharAt(n.length()-1);
-		}
-		
-		return n.toString().trim();
-	}
+//	private File concatTestHarnes(File t) {
+//		//TODO: check if harness file already exists & is newer than plain js file (skip execution otherwise)
+//		//TODO: use alternative temp path to store harnessed js files
+//		//NOTE: the JS-extensions are defined here https://github.com/Microsoft/ChakraCore/blob/master/bin/ch/WScriptJsrt.cpp
+//		// and https://github.com/Microsoft/ChakraCore/blob/master/lib/Runtime/Base/ScriptContext.cpp # 1740
+//		String helperFunction = "GJCTHelper = {}\n"
+//				+"GJCTHelper.load = function(filename) {\n"
+//				+"try{load(filename)}\n"
+//				+"catch (e) {\n"
+////				+"print(e);"
+//				+" load(filename.replace(/String.fromCharCode(0x5C)/g,\"/\"))\n"
+//				+"}\n"
+//				+"}\n";
+//
+//		
+//		String harness = helperFunction + "WScript = {};\nWScript.Echo = print;\n"
+//				+ "WScript.LoadScriptFile = load;\n"
+//				+ "WScript.LoadModuleFile = load;\n"
+//				+ "WScript.Arguments = new Array();\n";
+////		harness += "var BufferedReader = java.io.BufferedReader; \n var File = java.io.File;\n "
+////				+ "var FileReader = java.io.FileReader; \n function loadScriptFile(fileName) {\n"
+////				+ " try { \n var reader = new FileReader(new File(fileName));\n var bufferedReader = new BufferedReader(reader);"
+////				+ "var line;\n var code; \n while ((line = bufferedReader.readLine()) != null) {"
+////				+ " code += line; \n }\n  eval.call(this, code); execScript(code); } catch(e) { \n print('file not found')\n"
+////				+ " } if (reader) { reader.close(); } \n } \n WScript.loadScriptFile = loadScriptFile;";
+//		
+//		File nFile = new File(t.getAbsolutePath().replace(".js", ".HNS.js"));
+////		new TemporaryFile
+//		List <String> test;
+//		
+//		try {
+//			PrintWriter pw = new PrintWriter(nFile, "UTF-8");
+//			test = java.nio.file.Files.readAllLines(t.toPath(), java.nio.charset.StandardCharsets.UTF_8);
+//			pw.print(harness);
+//			for(String line : test) {
+//				pw.println(line);
+//			}
+//			pw.close();
+//		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+//			e.printStackTrace();
+//			System.err.println("GJTI-Problem :" + e.getMessage());
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return nFile;
+//	}
 	
 	/** try a more condensed example */
 //	private TestOutput executeGraalJS(File t) {
