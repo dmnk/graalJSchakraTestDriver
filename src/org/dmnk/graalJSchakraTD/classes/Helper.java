@@ -53,5 +53,14 @@ public class Helper {
 		return fileContent;
 	}
 	
+	public static String removeTrailingNewline(String old) {
+		StringBuilder n = new StringBuilder(old);
+		if(n.length() > 0 && n.charAt(n.length()-1) == '\n') {
+			n.deleteCharAt(n.length()-1);
+		}
+		
+		return n.toString().trim();
+	}
+	
 	
 }

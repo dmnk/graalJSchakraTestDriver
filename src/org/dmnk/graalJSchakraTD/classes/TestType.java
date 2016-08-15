@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 
 import org.dmnk.graalJSchakraTD.enums.FailReason;
+import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
+import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
+import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 
 
@@ -49,7 +52,45 @@ public enum TestType {
 		}
 	}
 	
-
+	
+	public static ExecutedTest determineTestResult(Test t, TestOutput to) {
+		//merge baseline and testfile
+//		File mf = new File(t.getFilename());
+		
+		//execute with graal
+//		TestOutput to = executeGraalJS(mf);
+		
+		//decide, based on TestOutput.rc, erroroutput and stdout if and why and where it failed
+		if(TestType.passed(t, to)) {
+			PassedTest pt = new GraalJSPassedTest(t, to);
+			return pt;
+		} else {
+			//check failreason;
+			String diff;
+			FailedTest ft;
+			FailReason fr = evaluate(t, to);
+			switch(t.getTestType()) {
+			case BASELINE:
+				diff = DiffUtilsWrapper.getDiff(t, to);
+				
+				ft = new GraalJSFailedTest(t, to, fr, diff);
+				
+				return ft;
+//				break;
+			case PASSSTRING:
+//				diff = DiffUtilsWrapper.getDiff("Passed", to.getStdOut());
+				// no need to evaluate the exact diff to the pass-string, right?
+				// but maybe the testtype should be visible in the result output?
+				
+				ft = new GraalJSFailedTest(t, to, fr);
+				return ft;
+//				break;
+			default:
+				return new GraalJSFailedTest(t, to, fr); 
+				//TODO: (unknown testtype exception)  or -> blow up testtype to validate "itself" <-
+			}			
+		}
+	}
 
 
 }
