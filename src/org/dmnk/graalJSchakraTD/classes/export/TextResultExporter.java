@@ -63,7 +63,7 @@ public class TextResultExporter implements ResultExporter {
 			PrintWriter pw = new PrintWriter(this.exportPath, "UTF-8");
 			pw.print(this.exportTXT);
 			pw.close();
-			System.out.println("exporter results as text in file "+this.exportPath);
+			System.out.println("exported results as text in file "+this.exportPath);
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
