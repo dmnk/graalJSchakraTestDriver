@@ -5,7 +5,8 @@ import java.util.HashMap;
 import org.dmnk.graalJSchakraTD.classes.Configuration;
 import org.dmnk.graalJSchakraTD.classes.Configuration.ExecutableMode;
 import org.dmnk.graalJSchakraTD.classes.Configuration.HarnessMode;
-import org.dmnk.graalJSchakraTD.interfaces.ConfigurationProviderInterface;
+import org.dmnk.graalJSchakraTD.exceptions.ConfigurationException;
+import org.dmnk.graalJSchakraTD.interfaces.ConfigurationProvider;
 
 /**
  * parses the arguments provided at the CLI and returns a Configuration object  
@@ -17,7 +18,7 @@ import org.dmnk.graalJSchakraTD.interfaces.ConfigurationProviderInterface;
  * to match that, even the cli handling should be more sophisticated like:
  * @see http://commons.apache.org/cli/ 
  */
-public class CLIConfigProvider implements ConfigurationProviderInterface {
+public class CLIConfigProvider implements ConfigurationProvider {
 	
 	private String args[];
 	
@@ -29,20 +30,18 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 		this.args = args;
 		tempVals = new HashMap<String,String>();
 		c = new Configuration();
+		
+		//retain some of the harness mode functionality, just in case of
+		tempVals.put("HNmode", "p");
 	}
 	
-//	public CLIConfigProvider(String args[]) {
-//		this(args);
-//		c = new Configuration;
-//	}
-	
 	@Override
-	public Configuration getConfig() throws Exception {
+	public Configuration getConfig() throws ConfigurationException {
 		this.process(args);
 		return c;
 	}
 	
-	private void process(String[] args) throws Exception {
+	private void process(String[] args) throws ConfigurationException {
 		
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
@@ -62,9 +61,9 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 			case "-g":
 				handleGraylist(params[1]);
 				break;
-			case "-hnsMode":
-				handleHarness("mode", params[1]);
-				break;
+//			case "-hnsMode":
+//				handleHarness("mode", params[1]);
+//				break;
 			case "-hnsFile":
 				handleHarness("file", params[1]);
 				break;
@@ -95,10 +94,10 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 				error.append("The argument ").append(arg).append(" wasn't understood");
 				error.append("\nPlease refer to the help, available via the -h parameter");
 				error.append(" for further information about the possible params!");
-//				throw new ConfigProviderException(1, error.toString());
+				throw new ConfigurationException(error.toString());
 				// 0 -> info, 1 -> warning; 2 -> stop
-				//TODO: the ConfigProvider Exception
-				break;
+				// ^^ if going through the helper to display the error 
+//				break;
 			}
 		}
 		
@@ -123,10 +122,10 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 	 * @throws Exception 
 	 * 
 	 */
-	private void handleHarness(String item, String value) throws Exception {
+	private void handleHarness(String item, String value) throws ConfigurationException {
 		switch (item) {
 		case "mode":
-			handleHarnessMode(value);
+//			handleHarnessMode(value);
 			break;
 		case "file":
 			handleHarnessFile(value);
@@ -134,23 +133,23 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 		}
 	}
 	
-	private void handleHarnessMode(String value) throws Exception {
-		if (!(value.equals("i") || value.equals("p"))) {
-//			throw new ConfigProviderException(2, "either b or w for the list-mode! ["+value+"]");
-		}
-		// the list is already present, can add the values to config
-		if(tempVals.containsKey("HNfile")) {
-			String exec = tempVals.get("HNfile");
-			tempVals.remove("HNfile");
-			
-			insertHarness(value, exec);
-		} else {
-			//store the mode in the temp storage
-			tempVals.put("HNmode", value);
-		}
-	}
+//	private void handleHarnessMode(String value) throws ConfigurationException {
+//		if (!(value.equals("i") || value.equals("p"))) {
+////			throw new ConfigProviderException(2, "either b or w for the list-mode! ["+value+"]");
+//		}
+//		// the list is already present, can add the values to config
+//		if(tempVals.containsKey("HNfile")) {
+//			String exec = tempVals.get("HNfile");
+//			tempVals.remove("HNfile");
+//			
+//			insertHarness(value, exec);
+//		} else {
+//			//store the mode in the temp storage
+//			tempVals.put("HNmode", value);
+//		}
+//	}
 	
-	private void handleHarnessFile(String value) throws Exception {
+	private void handleHarnessFile(String value) throws ConfigurationException {
 		// the mode is already present, can add the values to config
 		if(tempVals.containsKey("HNmode")) {
 			String m = tempVals.get("HNmode");
@@ -163,21 +162,20 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 		}
 	}
 	
-	private void insertHarness(String m, String file) throws Exception {
+	private void insertHarness(String m, String file) throws ConfigurationException {
 		HarnessMode hm;
 		
 		switch (m) {
-		case "i":
-			hm = HarnessMode.INCLUDE;
-			break;
+//		case "i":
+//			hm = HarnessMode.INCLUDE;
+//			break;
 		case "p":
 			hm = HarnessMode.PARAMETER;
 			break;
-			default:
-				throw new Exception ("unknown executable mode: "+m);
+		default:
+			throw new ConfigurationException ("unknown harness mode: "+m);
 		}
 		
-		//TODO: internal???, gonna resurrect the 3rd enum for that
 		c.setHarness(hm, file);
 	}
 	
@@ -186,7 +184,7 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 	 * @throws Exception 
 	 * 
 	 */
-	private void handleExec(String item, String value) throws Exception {
+	private void handleExec(String item, String value) throws ConfigurationException {
 		switch (item) {
 		case "execMode":
 			handleExecModeEntry(item, value);
@@ -197,7 +195,7 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 		}
 	}
 	
-	private void handleExecModeEntry(String item, String value) throws Exception {
+	private void handleExecModeEntry(String item, String value) throws ConfigurationException {
 		if (!(value.equals("b") || value.equals("w"))) {
 //			throw new ConfigProviderException(2, "either b or w for the list-mode! ["+value+"]");
 		}
@@ -213,7 +211,7 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 		}
 	}
 	
-	private void handleExecCommandEntry(String value) throws Exception {
+	private void handleExecCommandEntry(String value) throws ConfigurationException {
 		// the mode is already present, can add the values to config
 		if(tempVals.containsKey("EMmode")) {
 			String m = tempVals.get("EMmode");
@@ -226,7 +224,7 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 		}
 	}
 	
-	private void insertExecMode(String m, String exec) throws Exception {
+	private void insertExecMode(String m, String exec) throws ConfigurationException {
 		ExecutableMode em;
 		
 		switch (m) {
@@ -237,10 +235,10 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 			em = ExecutableMode.INDIRECT;
 			break;
 			default:
-				throw new Exception ("unknown executable mode: "+m);
+				throw new ConfigurationException ("unknown executable mode: "+m);
 		}
 		
-		c.setGraalJSexec(em, exec);
+		c.setExec(em, exec);
 	}
 	
 	
@@ -313,10 +311,10 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 		c.setGrayList(list);
 	}
 	
-	private void handleExport(String export) throws Exception {
+	private void handleExport(String export) throws ConfigurationException {
 		String args[] = export.split("#");
 		if(args.length != 2) {
-			throw new Exception("Export parameter has to consist of two parts, the type and the export path, split by an #!");	
+			throw new ConfigurationException("Export parameter has to consist of two parts, the type and the export path, split by an #!");	
 		}
 		
 		c.addExport(args[0], args[1]);
@@ -340,9 +338,9 @@ public class CLIConfigProvider implements ConfigurationProviderInterface {
 		System.out.println("\t same format as the black/white-lists");
 		System.out.println("\t tests will be shown in the summary but not executed - for known to fail tests");
 		
-		System.out.println("-hnsMode=[i/p] for harness file mode, uses file from parameter -hnsFile (or pre-delivered one if not set)");
-		System.out.println("\t p: provide it chakra as parameter");
-		System.out.println("\t i: inject it into the code of the test");
+//		System.out.println("-hnsMode=[i/p] for harness file mode, uses file from parameter -hnsFile (or pre-delivered one if not set)");
+//		System.out.println("\t p: provide it chakra as parameter");
+//		System.out.println("\t i: inject it into the code of the test");
 		
 		System.out.println("-hnsFile=HarnessFile.js");
 		System.out.println("\t custom harness file, otherwise pre-delivered one will be used");

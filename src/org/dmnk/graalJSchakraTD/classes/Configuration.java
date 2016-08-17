@@ -1,11 +1,12 @@
 package org.dmnk.graalJSchakraTD.classes;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 public class Configuration {
 	
-	private String graalJSexec;
-	private ExecutableMode graalJSexecMode;
+	private String executable;
+	private ExecutableMode execMode;
 	
 	/**
 	 * signals the environment that during reading
@@ -31,6 +32,11 @@ public class Configuration {
 	
 	private int verbosity;
 	
+	private int maxThreads;
+	
+	private int timeoutValue;
+	private TimeUnit timeoutUnit;
+	
 	public Configuration() {
 		exports = new HashMap<String,String>();
 		readyToExec = true;
@@ -51,6 +57,30 @@ public class Configuration {
 	
 	public int getVerbosity () {
 		return verbosity;
+	}
+	
+	public void setMaxThreads(int threads) {
+		maxThreads = threads;
+	}
+	
+	public int getMaxThreads() {
+		return maxThreads;
+	}
+	
+	public void setTimeoutValue(int value) {
+		timeoutValue = value;
+	}
+	
+	public int getTimeoutValue() {
+		return timeoutValue;
+	}
+	
+	public void setTimeoutUnit(TimeUnit tu) {
+		timeoutUnit = tu;
+	}
+	
+	public TimeUnit getTimeoutUnit() {
+		return timeoutUnit;
 	}
 	
 /* WHITE / GRAY / BLACKLISTS */
@@ -76,7 +106,7 @@ public class Configuration {
 		if(listMode == ListMode.WHITE) {
 			return list;
 		} else {
-			throw new Exception ("Tried to fetch whitelist, mode is " + listMode.toString());
+			throw new Exception ("Tried to set whitelist, mode is " + listMode.toString());
 		}
 	}
 	
@@ -84,7 +114,7 @@ public class Configuration {
 		if(listMode == ListMode.BLACK) {
 			return list;
 		} else {
-			throw new Exception ("Tried to fetch blacklist, mode is " + listMode.toString());
+			throw new Exception ("Tried to set blacklist, mode is " + listMode.toString());
 		}
 	}
 	
@@ -105,18 +135,18 @@ public class Configuration {
 		return exports.get(type);
 	}
 	
-/* GRAAL JS EXE */
-	public void setGraalJSexec(ExecutableMode mode, String exec) {
-		graalJSexecMode = mode;
-		graalJSexec = exec;
+/* Executable under test command */
+	public void setExec(ExecutableMode mode, String exec) {
+		execMode = mode;
+		executable = exec;
 	}
 	
 	public String getExec() {
-		return graalJSexec;
+		return executable;
 	}
 	
 	public ExecutableMode getExecMode() {
-		return graalJSexecMode;
+		return execMode;
 	}
 	
 /*  TESTS PATH */
