@@ -62,5 +62,23 @@ public class Helper {
 		return n.toString().trim();
 	}
 	
+	/**
+	 * returns 0 if nothing found
+	 * @param hay
+	 * @param needle
+	 * @param sep
+	 * @return
+	 */
+	public static int numberAfterString(String hay, String needle, char sep) {
+		if(hay.contains(needle)) {
+			int start = hay.indexOf(needle) + needle.length()+1;
+			int end = hay.indexOf(sep, start);
+			Integer discoveredValue = Integer.parseInt(hay.substring(start, end));
+			return discoveredValue;
+		} else {
+			return 0;
+		}
+		
+	}
 	
 }

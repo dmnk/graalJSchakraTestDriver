@@ -15,7 +15,7 @@ Right now it looks like the test-driver will be available to execute arbitrary t
 - [x] in/excluding tests based on white/blacklists
 - [x] excluding tests known to crash the VM based on a additional "crashlist"
 - [x] executing the tests
-- [ ] determine the fail reason / line
+- [x] determine the fail reason / line
 - [x] exporting the results
   - different formats (html & fail/pass filename only)
   - text should be ready

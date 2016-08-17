@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import org.dmnk.graalJSchakraTD.classes.Helper;
 import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
@@ -119,7 +120,7 @@ public class HTMLResultExporter implements ResultExporter {
 			+"</div>\n"
 			+"<div id=\"collapse%%TEST_ID%%_js\" class=\"panel-collapse collapse\">\n" //TODO: same id as href above
 			+"<div class=\"panel-body code\">\n"
-			+"<pre class=\"line-numbers\" data-src=\"test/%%FILE_LOCATION%%\"></pre>"// data-line=\"%%HIGHLIGHT_LINES%%\"></pre>\n"
+			+"<pre class=\"line-numbers\" data-src=\"test/%%FILE_LOCATION%%\" data-line=\"%%HIGHLIGHT_LINES%%\"></pre>\n"
 //			+"<pre class=\"line-numbers\" data-src=\"%%FILE_NAME%%\"></pre>\n"
 			+"</div>\n"
 			+"</div>\n"
@@ -190,6 +191,7 @@ public class HTMLResultExporter implements ResultExporter {
 	private final String phStatus = "%%TEST_STATUS%%";
 	private final String phTestOutput = "%%TEST_OUTPUT%%";
 	private final String phResult = "%%RESULT%%"; //what was the outcome
+	private final String phErrorLine = "%%HIGHLIGHT_LINES%%"; //where did the error occur
 	
 	//DIAGRAM
 	private final String pctGreen ="%%PCT_PASSED%%";
@@ -283,6 +285,7 @@ public class HTMLResultExporter implements ResultExporter {
 		tempTest = tempTest.replaceAll(this.phTestNr, ""+this.exportedTests++);
 		
 		String testHighlight;
+//		int errorLine = 0;
 		
 		if(t instanceof FailedTest) {
 			FailedTest ft = (FailedTest) t;
@@ -295,6 +298,9 @@ public class HTMLResultExporter implements ResultExporter {
 		
 		tempTest = tempTest.replaceAll(phStatus, statusClass.getOrDefault(testHighlight, new String(testHighlight + " not found!!")));
 		tempTest = tempTest.replace(phResult, testHighlight);
+//		if(errorLine > 0) {
+//			tempTest = tempTest.replace(phErrorLine, ""+errorLine);
+//		}
 		
 		this.exportHTML.append(tempTest);
 		
@@ -313,7 +319,14 @@ public class HTMLResultExporter implements ResultExporter {
 		tempTest = tempTest.replaceAll(phTestID, ""+testID);
 		
 		tempTest = tempTest.replaceAll(phFileLocation, tg.getGroupName() + "/" + t.getTestName());
-//		TODO: tempTest = tempTest.replaceAll(phFileLineNumbers, t.getErrorLines());
+		
+		int errorLine =0;
+		if(t instanceof FailedTest) {
+			errorLine = Helper.numberAfterString(((FailedTest) t).getErrOut(), t.getFilename(), ':');
+		}
+		if(errorLine > 0) {
+			tempTest = tempTest.replaceAll(phErrorLine, ""+errorLine);
+		}
 		return tempTest;
 	}
 		
