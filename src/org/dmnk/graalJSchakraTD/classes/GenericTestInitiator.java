@@ -1,23 +1,16 @@
 package org.dmnk.graalJSchakraTD.classes;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.dmnk.graalJSchakraTD.classes.Configuration.ExecutableMode;
-import org.dmnk.graalJSchakraTD.classes.Configuration.HarnessMode;
+import org.dmnk.graalJSchakraTD.classes.test.GenericFailedTest;
+import org.dmnk.graalJSchakraTD.classes.test.GenericPassedTest;
+import org.dmnk.graalJSchakraTD.classes.test.TestOutput;
 import org.dmnk.graalJSchakraTD.enums.FailReason;
-import org.dmnk.graalJSchakraTD.exceptions.GraalJSTestException;
+import org.dmnk.graalJSchakraTD.enums.TestType;
+import org.dmnk.graalJSchakraTD.exceptions.ConfigurationException;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
+import org.dmnk.graalJSchakraTD.interfaces.TestEvaluator;
 import org.dmnk.graalJSchakraTD.interfaces.TestInitiator;
 
 /**
@@ -25,41 +18,47 @@ import org.dmnk.graalJSchakraTD.interfaces.TestInitiator;
  * @author Dominik
  *
  */
-public class GraalJSTestInitiator implements TestInitiator {
+public class GenericTestInitiator implements TestInitiator {
 
-	private File graalJS;
 	private Configuration c;
+	private TestEvaluator te;
 	
-	public GraalJSTestInitiator (Configuration conf) throws GraalJSTestException {
+	public GenericTestInitiator (Configuration conf, TestEvaluator te)  {
 		c = conf;
-			
+		this.te = te;
 	}
 	
 	/**
+	 * @throws ConfigurationException 
 	 * @deprecated
 	 */
 	@Override
 	public ExecutedTest runTest(Test t) {
 		//merge baseline and testfile
-		File mf = new File(t.getFilename());
+//		File mf = new File(t.getFilename());
 		
 		//execute with graal
-		TestOutput to = executeGraalJS(mf);
+		TestOutput to = null;
+		try {
+			to = executeGraalJS(t);
+		} catch (ConfigurationException e) {
+			
+		}
 		
 		//decide, based on TestOutput.rc, erroroutput and stdout if and why and where it failed
-		if(TestType.passed(t, to)) {
-			PassedTest pt = new GraalJSPassedTest(t, to);
+		if(te.passed(t, to)) {
+			PassedTest pt = new GenericPassedTest(t, to);
 			return pt;
 		} else {
 			//check failreason;
 			String diff;
 			FailedTest ft;
-			FailReason fr = TestType.evaluate(t, to);
+			FailReason fr = te.evaluate(t, to);
 			switch(t.getTestType()) {
 			case BASELINE:
 				diff = DiffUtilsWrapper.getDiff(t, to);
 				
-				ft = new GraalJSFailedTest(t, to, fr, diff);
+				ft = new GenericFailedTest(t, to, fr, diff);
 				
 				return ft;
 //				break;
@@ -68,11 +67,11 @@ public class GraalJSTestInitiator implements TestInitiator {
 				// no need to evaluate the exact diff to the pass-string, right?
 				// but maybe the testtype should be visible in the result output?
 				
-				ft = new GraalJSFailedTest(t, to, fr);
+				ft = new GenericFailedTest(t, to, fr);
 				return ft;
 //				break;
 			default:
-				return new GraalJSFailedTest(t, to, fr); 
+				return new GenericFailedTest(t, to, fr); 
 				//TODO: (unknown testtype exception)  or -> blow up testtype to validate "itself" <-
 			}			
 		}
@@ -82,8 +81,9 @@ public class GraalJSTestInitiator implements TestInitiator {
 	 * @deprecated
 	 * @param t
 	 * @return
+	 * @throws ConfigurationException 
 	 */
-	public TestOutput executeGraalJS(File t) {
+	public TestOutput executeGraalJS(Test t) throws ConfigurationException {
 		TestOutput to = null;
 		
 		//combine test and harness ? 
@@ -93,14 +93,9 @@ public class GraalJSTestInitiator implements TestInitiator {
 //			to = launchGraal(test);
 //			test.delete(); 
 //		} else {
-		GenericTestExecutor gte;
-		try {
-			gte = new GenericTestExecutor(c);
+		TestExecutorGeneric gte;
+			gte = new TestExecutorGeneric(c);
 			to = gte.launch(t);
-		} catch (GraalJSTestException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 //		}
 		
 		return to;

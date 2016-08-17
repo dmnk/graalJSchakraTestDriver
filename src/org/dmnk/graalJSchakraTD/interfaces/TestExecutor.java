@@ -1,9 +1,7 @@
 package org.dmnk.graalJSchakraTD.interfaces;
 
-import java.io.File;
-
-import org.dmnk.graalJSchakraTD.classes.TestOutput;
+import org.dmnk.graalJSchakraTD.classes.test.TestOutput;
 
 public interface TestExecutor {
-	public TestOutput launch (File f);
+	public TestOutput launch (Test t);
 }
