@@ -346,7 +346,7 @@ public class HTMLResultExporter implements ResultExporter {
 			pw.print(this.exportHTML);
 			pw.close();
 			
-			System.out.println("exporter results as HTML in file "+this.exportPath);
+			System.out.println("exported results as HTML in file "+this.exportPath);
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
