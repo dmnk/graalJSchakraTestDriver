@@ -1,22 +1,23 @@
-package org.dmnk.graalJSchakraTD.classes;
+package org.dmnk.graalJSchakraTD.classes.test;
 
+import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 
-public abstract class GraalJSExecutedTest extends GraalJSTest implements ExecutedTest {
+public abstract class GenericExecutedTest extends GenericTest implements ExecutedTest {
 
 //	private String output;
 //	private int returnCode;
 	protected TestOutput tOut;
 	
-	public GraalJSExecutedTest(String testname, TestType tt, int returnCode, String output) {
+	public GenericExecutedTest(String testname, TestType tt, int returnCode, String output) {
 		super(testname, tt);
 		this.tOut = new TestOutput(returnCode,output,"");
 //		this.returnCode = returnCode;
 //		this.output = output;
 	}
 	
-	public GraalJSExecutedTest(Test plannedTest, int returnCode, String output) {
+	public GenericExecutedTest(Test plannedTest, int returnCode, String output) {
 		super(plannedTest.getFilename(), plannedTest.getTestType());
 //		this.returnCode = returnCode;
 //		this.output = output;
@@ -24,14 +25,14 @@ public abstract class GraalJSExecutedTest extends GraalJSTest implements Execute
 		this.tOut = new TestOutput(returnCode,output,"");
 	}
 	
-	public GraalJSExecutedTest(ExecutedTest eTest) {
+	public GenericExecutedTest(ExecutedTest eTest) {
 		super(eTest);
 //		this.returnCode = eTest.getReturncode();
 //		this.output = eTest.getOutput();
 		this.tOut = new TestOutput(eTest.getReturncode(), eTest.getOutput(), "");//TODO: expand with getErrOut();
 	}
 	
-	public GraalJSExecutedTest(Test plannedTest, TestOutput tOut) {
+	public GenericExecutedTest(Test plannedTest, TestOutput tOut) {
 		super(plannedTest);
 		this.tOut = tOut;
 	}

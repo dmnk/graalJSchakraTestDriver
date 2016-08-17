@@ -1,19 +1,20 @@
-package org.dmnk.graalJSchakraTD.classes;
+package org.dmnk.graalJSchakraTD.classes.test;
 
 import java.io.File;
 
+import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 
-public class GraalJSTest implements Test {
+public class GenericTest implements Test {
 	private File testFile;
 	private TestType testType;
 	
-	public GraalJSTest(String file, TestType tt) {
+	public GenericTest(String file, TestType tt) {
 		this.testFile = new File(file);
 		this.testType = tt;
 	}
 	
-	public GraalJSTest(Test t) {
+	public GenericTest(Test t) {
 		this.testFile = new File(t.getFilename());
 		this.testType = t.getTestType();
 	}

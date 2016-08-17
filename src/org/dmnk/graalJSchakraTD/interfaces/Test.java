@@ -1,6 +1,6 @@
 package org.dmnk.graalJSchakraTD.interfaces;
 
-import org.dmnk.graalJSchakraTD.classes.TestType;
+import org.dmnk.graalJSchakraTD.enums.TestType;
 
 public interface Test {
 	
