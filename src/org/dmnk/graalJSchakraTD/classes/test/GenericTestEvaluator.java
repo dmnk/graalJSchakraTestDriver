@@ -1,20 +1,22 @@
-package org.dmnk.graalJSchakraTD.classes;
+package org.dmnk.graalJSchakraTD.classes.test;
 
 import java.io.File;
 import java.io.IOException;
 
+import org.dmnk.graalJSchakraTD.classes.DiffUtilsWrapper;
+import org.dmnk.graalJSchakraTD.classes.Helper;
 import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
+import org.dmnk.graalJSchakraTD.interfaces.TestEvaluator;
 
-
-public enum TestType {
-	BASELINE, PASSSTRING;
+public class GenericTestEvaluator implements TestEvaluator {
 	
-	public static FailReason evaluate(Test t, TestOutput to) {
-		if(to.getErrOut().contains("Assert")) return FailReason.ASSERTION;
+	@Override
+	public FailReason evaluate(Test t, TestOutput to) {
+		if(to.getErrOut().contains("Assert") || to.getStdOut().contains("Assert")) return FailReason.ASSERTION;
 		if(to.getErrOut().length()>0) return FailReason.EXCEPTION;
 		
 		if(!to.getErrOut().isEmpty()) return FailReason.WARNING;
@@ -24,7 +26,8 @@ public enum TestType {
 //			return FailReason.CRASH;
 	}
 	
-	public static boolean passed (Test t, TestOutput to) {
+	@Override
+	public boolean passed (Test t, TestOutput to) {
 		if(to.getReturnCode() != 0) {
 			return false;
 		} else if (!to.getErrOut().isEmpty()) {
@@ -52,8 +55,8 @@ public enum TestType {
 		}
 	}
 	
-	
-	public static ExecutedTest determineTestResult(Test t, TestOutput to) {
+	@Override
+	public ExecutedTest determineTestResult(Test t, TestOutput to) {
 		//merge baseline and testfile
 //		File mf = new File(t.getFilename());
 		
@@ -61,8 +64,8 @@ public enum TestType {
 //		TestOutput to = executeGraalJS(mf);
 		
 		//decide, based on TestOutput.rc, erroroutput and stdout if and why and where it failed
-		if(TestType.passed(t, to)) {
-			PassedTest pt = new GraalJSPassedTest(t, to);
+		if(passed(t, to)) {
+			PassedTest pt = new GenericPassedTest(t, to);
 			return pt;
 		} else {
 			//check failreason;
@@ -73,7 +76,7 @@ public enum TestType {
 			case BASELINE:
 				diff = DiffUtilsWrapper.getDiff(t, to);
 				
-				ft = new GraalJSFailedTest(t, to, fr, diff);
+				ft = new GenericFailedTest(t, to, fr, diff);
 				
 				return ft;
 //				break;
@@ -82,15 +85,13 @@ public enum TestType {
 				// no need to evaluate the exact diff to the pass-string, right?
 				// but maybe the testtype should be visible in the result output?
 				
-				ft = new GraalJSFailedTest(t, to, fr);
+				ft = new GenericFailedTest(t, to, fr);
 				return ft;
 //				break;
 			default:
-				return new GraalJSFailedTest(t, to, fr); 
+				return new GenericFailedTest(t, to, fr); 
 				//TODO: (unknown testtype exception)  or -> blow up testtype to validate "itself" <-
 			}			
 		}
 	}
-
-
 }
