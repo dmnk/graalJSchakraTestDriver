@@ -13,14 +13,15 @@ import org.dmnk.graalJSchakraTD.interfaces.ListFetcher;
  * @author dominik
  *
  */
-public class GraalJSListFetcher implements ListFetcher {
+public class ListFetcherGeneric implements ListFetcher {
 	
 	Configuration c;
-	public GraalJSListFetcher () {
+	
+	public ListFetcherGeneric () {
 		
 	}
 	
-	public GraalJSListFetcher (Configuration config) {
+	public ListFetcherGeneric (Configuration config) {
 		c = config;
 	}
 	

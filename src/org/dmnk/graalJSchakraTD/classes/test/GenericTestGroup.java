@@ -1,4 +1,4 @@
-package org.dmnk.graalJSchakraTD.classes;
+package org.dmnk.graalJSchakraTD.classes.test;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -6,11 +6,11 @@ import java.util.List;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 
-public class GraalJSTestGroup implements TestGroup {
+public class GenericTestGroup implements TestGroup {
 	protected List<Test> testList;
 	private String groupName;
 	
-	public GraalJSTestGroup (String name) {
+	public GenericTestGroup (String name) {
 		this.groupName = name;
 		this.testList = new LinkedList<Test>();
 	}

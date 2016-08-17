@@ -6,14 +6,17 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.dmnk.graalJSchakraTD.classes.test.GenericTest;
+import org.dmnk.graalJSchakraTD.classes.test.GenericTestGroup;
+import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 
-public class GraalJSTestFetcher implements TestFetcher {
+public class TestFetcherGeneric implements TestFetcher {
 	private FilenameFilter dirFilter, jsFilter;
 	private File testDir;
 	
-	public GraalJSTestFetcher(String directory) {
+	public TestFetcherGeneric(String directory) {
 		dirFilter = new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -84,13 +87,13 @@ public class GraalJSTestFetcher implements TestFetcher {
 		for(File f : directory.listFiles(jsFilter)) {
 			String path = new File(f.getParent()).getName();
 			if(tg == null) {
-				tg = new GraalJSTestGroup(path);
+				tg = new GenericTestGroup(path);
 			}			
 			
 			if(baselineExists(f)) {
-				tg.addTest(new GraalJSTest(f.getPath(), TestType.BASELINE));
+				tg.addTest(new GenericTest(f.getPath(), TestType.BASELINE));
 			} else {
-				tg.addTest(new GraalJSTest(f.getPath(), TestType.PASSSTRING));
+				tg.addTest(new GenericTest(f.getPath(), TestType.PASSSTRING));
 			}
 		}
 		return tg;
