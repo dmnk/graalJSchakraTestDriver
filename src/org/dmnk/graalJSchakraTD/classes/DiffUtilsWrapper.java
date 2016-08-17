@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.dmnk.graalJSchakraTD.classes.test.TestOutput;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 
 import difflib.DiffUtils;
@@ -26,7 +27,6 @@ public class DiffUtilsWrapper {
 			return getDiff(expected, actual);
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return "FAIL at opening File " + t.getBaseline();
 		}
