@@ -2,27 +2,27 @@ package org.dmnk.graalJSchakraTD.classes;
 
 import static org.junit.Assert.*;
 
-import org.dmnk.graalJSchakraTD.classes.GraalJSFailedTest;
-import org.dmnk.graalJSchakraTD.classes.GraalJSPassedTest;
-import org.dmnk.graalJSchakraTD.classes.GraalJSTest;
-import org.dmnk.graalJSchakraTD.classes.GraalJSTestExecutedGroup;
-import org.dmnk.graalJSchakraTD.classes.TestType;
+import org.dmnk.graalJSchakraTD.classes.test.GenericFailedTest;
+import org.dmnk.graalJSchakraTD.classes.test.GenericPassedTest;
+import org.dmnk.graalJSchakraTD.classes.test.GenericTest;
+import org.dmnk.graalJSchakraTD.classes.test.GenericTestExecutedGroup;
 import org.dmnk.graalJSchakraTD.enums.FailReason;
+import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.junit.Before;
 import org.junit.Test;
 
 public class GraalJSTestExecutedGroupTest {
-	private GraalJSTestExecutedGroup teg;
+	private GenericTestExecutedGroup teg;
 	
 	@Before
 	public void setUp() throws Exception {
-		teg = new GraalJSTestExecutedGroup("GroupName");
+		teg = new GenericTestExecutedGroup("GroupName");
 	}
 	
 	@Test
 	public void testGetOutput() {
-		GraalJSFailedTest fto = new GraalJSFailedTest("IwillFail.js", TestType.BASELINE, 0, "nothing", FailReason.OUTPUT);
-		GraalJSFailedTest ftw = new GraalJSFailedTest("IwillFailWithWarning.js", TestType.BASELINE, 0, "nothing", FailReason.WARNING);
+		GenericFailedTest fto = new GenericFailedTest("IwillFail.js", TestType.BASELINE, 0, "nothing", FailReason.OUTPUT);
+		GenericFailedTest ftw = new GenericFailedTest("IwillFailWithWarning.js", TestType.BASELINE, 0, "nothing", FailReason.WARNING);
 		teg.addTest(fto);
 		teg.addTest(ftw);
 		
@@ -37,8 +37,8 @@ public class GraalJSTestExecutedGroupTest {
 			fail("failed tests, even if there are no tests in the group");
 		}
 		
-		GraalJSFailedTest fto = new GraalJSFailedTest("IwillFail.js", TestType.BASELINE, 0, "nothing", FailReason.OUTPUT);
-		GraalJSFailedTest ftw = new GraalJSFailedTest("IwillFailWithWarning.js", TestType.BASELINE, 0, "nothing", FailReason.WARNING);
+		GenericFailedTest fto = new GenericFailedTest("IwillFail.js", TestType.BASELINE, 0, "nothing", FailReason.OUTPUT);
+		GenericFailedTest ftw = new GenericFailedTest("IwillFailWithWarning.js", TestType.BASELINE, 0, "nothing", FailReason.WARNING);
 		teg.addTest(fto);
 		
 		if(teg.getFailed() != 1) {
@@ -57,10 +57,10 @@ public class GraalJSTestExecutedGroupTest {
 	
 	@Test
 	public void testSumEqualsParts() {
-		GraalJSFailedTest fto = new GraalJSFailedTest("IwillFail.js", TestType.BASELINE, 0, "nothing", FailReason.OUTPUT);
-		GraalJSFailedTest ftw = new GraalJSFailedTest("IwillFailWithWarning.js", TestType.BASELINE, 0, "nothing", FailReason.WARNING);
-		GraalJSPassedTest pd = new GraalJSPassedTest("iwilpass.js",TestType.PASSSTRING, 0, "passed");
-		GraalJSTest excludedTest = new GraalJSTest("iWontBeTested.js", TestType.PASSSTRING);
+		GenericFailedTest fto = new GenericFailedTest("IwillFail.js", TestType.BASELINE, 0, "nothing", FailReason.OUTPUT);
+		GenericFailedTest ftw = new GenericFailedTest("IwillFailWithWarning.js", TestType.BASELINE, 0, "nothing", FailReason.WARNING);
+		GenericPassedTest pd = new GenericPassedTest("iwilpass.js",TestType.PASSSTRING, 0, "passed");
+		GenericTest excludedTest = new GenericTest("iWontBeTested.js", TestType.PASSSTRING);
 		
 		teg.addTest(fto);
 		teg.addTest(ftw);
