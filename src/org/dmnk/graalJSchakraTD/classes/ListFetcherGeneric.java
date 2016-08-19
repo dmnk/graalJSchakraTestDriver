@@ -6,10 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.dmnk.graalJSchakraTD.exceptions.ConfigurationException;
 import org.dmnk.graalJSchakraTD.interfaces.ListFetcher;
 
 /**
- * provides the content of the textfiles as maps
+ * provides the content of the textfiles as maps.
+ * maps are used because of the convenient contains function, 
+ * the actual value is 0 for each entry!
+ * 
  * @author dominik
  *
  */
@@ -26,16 +30,15 @@ public class ListFetcherGeneric implements ListFetcher {
 	}
 	
 	@Override
-	public Map<String, Integer> fetchFolderList(String file) {
+	public Map<String, Integer> fetchFolderList(String file) throws ConfigurationException {
 
 		HashMap<String, Integer> fl = new HashMap<String, Integer>();
-		
+
 		try (Scanner s = new Scanner(new FileReader(file))){
 			while (s.hasNext()) {
 				String l = s.nextLine();
-				//if /Array is written...
-				//TODO maybe additional checks here, to ensure it's just one folder name per line?
 				
+				//if /Array is written...
 				l.replace("/", "");
 
 				if(l.charAt(0) == '#') {
@@ -47,22 +50,26 @@ public class ListFetcherGeneric implements ListFetcher {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ConfigurationException("the list requested under " +e.getMessage() +" could not be accessed!");
 		}
 		
 		return fl;
 	}
 	
 	@Override
-	public Map<String, HashMap<String, Integer>> fetchFileList(String file) {
+	public Map<String, HashMap<String, Integer>> fetchFileList(String file) throws ConfigurationException {
 		/**
 		 * contains the folders (which contain the files)
 		 */
 		Map<String, HashMap<String, Integer>> folderList;
 
 		folderList = new HashMap<String, HashMap<String, Integer>>();
-				
+		
+		if (file == null || file.length() == 0) {
+			//early stop, no parameter was set
+			return folderList;
+		}
+		
 		try (Scanner s = new Scanner(new FileReader(file))){
 			while (s.hasNext()) {
 				String l = s.nextLine();
@@ -72,7 +79,7 @@ public class ListFetcherGeneric implements ListFetcher {
 					//ignore comment lines
 					continue;
 				}
-				if(in.length != 3) { //actually .split without param shout map to split (.., 0), which should ommit the leading empty results
+				if(in.length != 3) { //actually .split without param should map to split (.., 0), which should omit the leading empty results
 					Helper.debugOut(c, 0, "LF-Issue", "Fetching failed for " + file + "; invalid entry: " +l);
 					continue;
 				}
@@ -87,11 +94,7 @@ public class ListFetcherGeneric implements ListFetcher {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NullPointerException e) {
-			//TODO
-			//no parameter was set
+			throw new ConfigurationException("the list requested under " +e.getMessage() +" could not be accessed!");
 		}
 		
 		return folderList;

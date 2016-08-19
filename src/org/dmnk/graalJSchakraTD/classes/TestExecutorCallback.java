@@ -11,6 +11,13 @@ import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestEvaluator;
 
+/**
+ * implements the {@link Runnable} interface as extension of the {@link TestExecutorGeneric} class
+ * therefore it can be submitted to an {@link ExecutorService} and run in parallel.
+ * @see TestExecutorFuture
+ * @author dominik
+ *
+ */
 public class TestExecutorCallback extends TestExecutorGeneric implements Runnable {
 	private final List<ExecutedTest> executedTests;
 	private final AtomicInteger countDownLatch;
@@ -41,7 +48,7 @@ public class TestExecutorCallback extends TestExecutorGeneric implements Runnabl
 	public void run() {
 		TestOutput to = launch(t);
 		ExecutedTest et = tEval.determineTestResult(t, to);
-
+		
 		executedTests.add(et);
 
 		if(et instanceof PassedTest) {

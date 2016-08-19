@@ -8,12 +8,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.dmnk.graalJSchakraTD.classes.test.TestOutput;
+import org.dmnk.graalJSchakraTD.interfaces.DiffGenerator;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 
 import difflib.DiffUtils;
 import difflib.Patch;
 
-public class DiffUtilsWrapper {
+/**
+ * wraps the external java-diff-utils library with some convenience methods
+ * 
+ * @author dominik
+ *
+ */
+public class DiffUtilsWrapper implements DiffGenerator {
 	
 	public static String getDiff(Test t, TestOutput to) {
 		try {
@@ -41,7 +48,8 @@ public class DiffUtilsWrapper {
 		return getDiff(sList, fList);
 	}
 	
-	public static String getDiff(String s1, String s2) {
+	@Override
+	public String getDiff(String s1, String s2) {
 		List<String> ls1, ls2;
 		ls1 = new LinkedList<String>();
 		ls1.add(s1);

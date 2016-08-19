@@ -343,7 +343,7 @@ public class CLIConfigProvider implements ConfigurationProvider {
 //		System.out.println("\t i: inject it into the code of the test");
 		
 		System.out.println("-hnsFile=HarnessFile.js");
-		System.out.println("\t custom harness file, otherwise pre-delivered one will be used");
+		System.out.println("\t path to harness file");
 		
 		System.out.println("-l=blackOrWhitelistFile.txt");
 		System.out.println("\t the Files structure has to be:");

@@ -1,4 +1,4 @@
-//package org.dmnk.graalJSchakraTD.classes;
+package org.dmnk.graalJSchakraTD.classes;
 //
 //import static org.junit.Assert.*;
 //
@@ -12,7 +12,7 @@
 //import org.junit.Before;
 //import org.junit.Test;
 //
-//public class GraalJSTestInitiatorTest {
+public class GraalJSTestInitiatorTest {
 //	private GraalJSTestInitiator ti;
 //	@Before
 //	public void setUp() throws Exception {
@@ -57,4 +57,4 @@
 //		fail("Not yet implemented");
 //	}
 //
-//}
+}

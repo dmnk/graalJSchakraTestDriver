@@ -11,23 +11,23 @@ public class GenericTestGroup implements TestGroup {
 	private String groupName;
 	
 	public GenericTestGroup (String name) {
-		this.groupName = name;
-		this.testList = new LinkedList<Test>();
+		groupName = name;
+		testList = new LinkedList<Test>();
 	}
 
 	@Override
 	public String getGroupName() {
-		return this.groupName;
+		return groupName;
 	}
 
 	@Override
 	public List<Test> getTests() {
-		return this.testList;
+		return testList;
 	}
 
 	@Override
 	public void addTest(Test test) {
-		this.testList.add(test);
+		testList.add(test);
 	}
 
 }

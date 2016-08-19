@@ -7,7 +7,11 @@ import org.dmnk.graalJSchakraTD.exceptions.ConfigurationException;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 
 /**
- * a wrapper for the generic test executor to match the callable interface - for the "future" testdriver
+ * implements the {@link Callable} interface as extension of the {@link TestExecutorGeneric} class
+ * therefore it can be submitted to an {@link ExecutorService} and run in parallel.
+ * this is the more lightweight approach (seen from the code side), as it's just a wrapper to comply
+ * with the Callable interface.
+ * @see TestExecutorCallback
  * @author dominik
  *
  */

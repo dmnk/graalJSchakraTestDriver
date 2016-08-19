@@ -322,7 +322,7 @@ public class HTMLResultExporter implements ResultExporter {
 		
 		int errorLine =0;
 		if(t instanceof FailedTest) {
-			errorLine = Helper.numberAfterString(((FailedTest) t).getErrOut(), t.getFilename(), ':');
+			errorLine = Helper.numberAfterString(((FailedTest) t).getErrorOutput(), t.getFilename(), ':');
 		}
 		if(errorLine > 0) {
 			tempTest = tempTest.replaceAll(phErrorLine, ""+errorLine);
@@ -335,10 +335,10 @@ public class HTMLResultExporter implements ResultExporter {
 		String outputCode = "";
 		String tempCode ="" ;
 			
-		if (ft.getErrOut().length() > 0) {
+		if (ft.getErrorOutput().length() > 0) {
 			tempCode = htmlTestOutputPanel.replaceAll(phFileName, "ERR-out");
 			tempCode = tempCode.replaceAll(phTestID, "e_"+testID);
-			outputCode += tempCode.replaceAll(phTestOutput, Matcher.quoteReplacement(ft.getErrOut()));
+			outputCode += tempCode.replaceAll(phTestOutput, Matcher.quoteReplacement(ft.getErrorOutput()));
 		}
 		if (ft.diffIsSet()) {
 			tempCode = htmlTestOutputPanel.replaceAll(phFileName, "DIFF");

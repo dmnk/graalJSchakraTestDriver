@@ -11,6 +11,15 @@ import org.dmnk.graalJSchakraTD.interfaces.TestDriver;
 import org.dmnk.graalJSchakraTD.interfaces.TestEvaluator;
 import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 
+/**
+ * the assembly of the different classes implementing the required functions / interfaces
+ * happens here.
+ * 
+ * further the configuration is processed and passed to those classes
+ * 
+ * @author dominik
+ *
+ */
 public class Main {
 
 	public static void main (String[] args) {

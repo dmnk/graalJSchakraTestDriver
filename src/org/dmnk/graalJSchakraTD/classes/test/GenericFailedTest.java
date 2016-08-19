@@ -11,22 +11,22 @@ public class GenericFailedTest extends GenericExecutedTest implements FailedTest
 	
 	public GenericFailedTest(String testname, TestType tt, int returnCode, String output, FailReason fr) {
 		super(testname, tt, returnCode, output);
-		this.failReason = fr;
+		failReason = fr;
 	}
 	
 	public GenericFailedTest(Test test, int returnCode, String output, FailReason fr) {
 		super(test, returnCode, output);
-		this.failReason = fr;
+		failReason = fr;
 	}
 	
 	public GenericFailedTest(Test test, TestOutput to, FailReason fr) {
 		super (test, to);
-		this.failReason = fr;
+		failReason = fr;
 	}
 
-	public GenericFailedTest(Test test, TestOutput to, FailReason fr, String diff) {
+	public GenericFailedTest(Test test, TestOutput to, FailReason fr, String differences) {
 		this(test, to, fr);
-		this.diff = diff;
+		diff = differences;
 	}
 	
 	@Override
@@ -46,10 +46,5 @@ public class GenericFailedTest extends GenericExecutedTest implements FailedTest
 	@Override
 	public boolean diffIsSet() {
 		return this.diff != null;
-	}
-
-//	@Override
-	public String getErrOut() {
-		return tOut.getErrOut();
 	}
 }

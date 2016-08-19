@@ -9,6 +9,11 @@ import org.dmnk.graalJSchakraTD.exceptions.ConfigurationException;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestExecutor;
 
+/**
+ * standard {@link TestExecutor} implementation, processing all the tests in sequence.
+ * @author dominik
+ *
+ */
 public class TestExecutorGeneric implements TestExecutor {
 	protected Configuration c;
 	protected File executable;

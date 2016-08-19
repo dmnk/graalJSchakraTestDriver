@@ -41,7 +41,7 @@ public class TextResultExporter implements ResultExporter {
 	}
 
 	private void addTXTHeader() {
-		this.exportTXT.append("Filename, Status\n");
+		exportTXT.append("Filename, Status\n");
 	}
 	
 	private void exportTest(Test t) {
@@ -55,17 +55,14 @@ public class TextResultExporter implements ResultExporter {
 		} else {
 			text.append("excluded");
 		}
-		this.exportTXT.append(text + "\n");
+		exportTXT.append(text + "\n");
 	}
 	
 	private void writeResult() {
-		try {
-			PrintWriter pw = new PrintWriter(this.exportPath, "UTF-8");
-			pw.print(this.exportTXT);
-			pw.close();
-			System.out.println("exported results as text in file "+this.exportPath);
+		try (PrintWriter pw = new PrintWriter(this.exportPath, "UTF-8")) {
+			pw.print(exportTXT);
+			System.out.println("exported results as text in file " + exportPath);
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

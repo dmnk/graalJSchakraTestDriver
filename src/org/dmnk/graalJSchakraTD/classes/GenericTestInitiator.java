@@ -4,7 +4,6 @@ import org.dmnk.graalJSchakraTD.classes.test.GenericFailedTest;
 import org.dmnk.graalJSchakraTD.classes.test.GenericPassedTest;
 import org.dmnk.graalJSchakraTD.classes.test.TestOutput;
 import org.dmnk.graalJSchakraTD.enums.FailReason;
-import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.exceptions.ConfigurationException;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;

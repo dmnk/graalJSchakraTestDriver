@@ -25,14 +25,15 @@ import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
 import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 
 /**
- * places the test-calls in a future list, gradually filled by the executorservices "call"-calls
+ * places the test-calls in a future list, gradually filled by the {@link TestExecutor}'s "call"-calls.
+ * Therefor a call to {@link Executors} creates a new {@link ExecutorService} with as many threads as configured. 
  * @author dominik
  *
  */
 public class TestDriverFutures extends TestDriverGeneric {
 	private ExecutorService e;
 	
-	public TestDriverFutures(Configuration c, TestFetcher tf, ListFetcher lf, TestEvaluator te) {
+	public TestDriverFutures(Configuration c, TestFetcher tf, ListFetcher lf, TestEvaluator te) throws ConfigurationException {
 		super(c, tf, lf, te);
 
 		e = Executors.newFixedThreadPool(c.getMaxThreads());

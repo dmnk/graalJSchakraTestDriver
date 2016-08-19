@@ -20,13 +20,21 @@ import org.dmnk.graalJSchakraTD.interfaces.TestEvaluator;
 import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
 import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 
+/**
+ * extends the {@link TestDriverGeneric} in a way that the testexecutor gets a list it can
+ * asynchronously put the results, as they come in, into.
+ * therefore just the process function is overridden.
+ * 
+ * @author dominik
+ *
+ */
 public class TestDriverCallback extends TestDriverGeneric {
 	
 	private final ScheduledExecutorService exs;
 	final private Object lock;
 	private AtomicInteger countDownLatch;
 	
-	public TestDriverCallback (Configuration c, TestFetcher tf, ListFetcher lf, TestEvaluator te) {
+	public TestDriverCallback (Configuration c, TestFetcher tf, ListFetcher lf, TestEvaluator te) throws ConfigurationException {
 		super(c, tf, lf, te);
 		
 		lock = new Object();

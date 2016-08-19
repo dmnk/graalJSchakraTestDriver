@@ -6,6 +6,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
+/**
+ * collection of little helper functions which are general enough
+ * that they might be used in different classes.
+ * 
+ * @author dominik
+ *
+ */
 public class Helper {
 	/**
 	 * returns -1 if no Configuration isn't set

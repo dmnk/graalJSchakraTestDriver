@@ -3,6 +3,16 @@ package org.dmnk.graalJSchakraTD.classes;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.dmnk.graalJSchakraTD.exceptions.ConfigurationException;
+
+
+/**
+ * the central configuration. every setting the other classes
+ * rely on, should be controlled through this class.
+ * 
+ * @author dominik
+ *
+ */
 public class Configuration {
 	
 	private String executable;
@@ -102,19 +112,19 @@ public class Configuration {
 		return listMode;
 	}
 	
-	public String getWhiteList() throws Exception {
+	public String getWhiteList() throws ConfigurationException {
 		if(listMode == ListMode.WHITE) {
 			return list;
 		} else {
-			throw new Exception ("Tried to set whitelist, mode is " + listMode.toString());
+			throw new ConfigurationException("Tried to set whitelist, mode is " + listMode.toString());
 		}
 	}
 	
-	public String getBlackList() throws Exception {
+	public String getBlackList() throws ConfigurationException {
 		if(listMode == ListMode.BLACK) {
 			return list;
 		} else {
-			throw new Exception ("Tried to set blacklist, mode is " + listMode.toString());
+			throw new ConfigurationException ("Tried to set blacklist, mode is " + listMode.toString());
 		}
 	}
 	

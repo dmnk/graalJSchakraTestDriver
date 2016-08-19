@@ -10,7 +10,7 @@ import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
 
 public class GenericTestExecutedGroup extends GenericTestGroup implements TestExecutedGroup {
-	private int passed =0, failed=0, warn=0, exception=0, crash=0, assertion=0, excluded=0, output;
+	private int passed =0, failed=0, warn=0, exception=0, crash=0, assertion=0, excluded=0, output=0;
 	
 	public GenericTestExecutedGroup (String name) {
 		super(name);
@@ -49,8 +49,7 @@ public class GenericTestExecutedGroup extends GenericTestGroup implements TestEx
 					//TODO: exception instead of error
 				}
 			} else {
-				System.err.println("how could that happen?");
-				//TODO: evaluate the need for an exception
+				System.err.println("generic-test-executor: a test of type executed but neither failed nor passed, how could that happen?");
 			}
 		} else {
 			excluded++;

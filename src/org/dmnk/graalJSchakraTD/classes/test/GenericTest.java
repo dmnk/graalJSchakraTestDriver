@@ -21,16 +21,19 @@ public class GenericTest implements Test {
 	
 	@Override
 	public String getFilename() {
-		return this.testFile.getAbsolutePath(); //.concat(".js");
+		return testFile.getAbsolutePath(); //.concat(".js");
 	}
 	
 	@Override
 	public String getTestName() {
 		return testFile.getName();
 	}
-
+	
+	@Override
 	public String getBaseline() {
 		if(testType == TestType.BASELINE){
+			//TODO: might be externalized, or at least done in a more secure way
+			// is needed in the testfetcher class too
 			return testFile.getAbsolutePath().replaceAll(".js", ".baseline");
 //			return testFile.getAbsolutePath().substring(-3).concat(".baseline");
 		} else return "";

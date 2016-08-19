@@ -9,9 +9,17 @@ import java.util.List;
 import org.dmnk.graalJSchakraTD.classes.test.GenericTest;
 import org.dmnk.graalJSchakraTD.classes.test.GenericTestGroup;
 import org.dmnk.graalJSchakraTD.enums.TestType;
+import org.dmnk.graalJSchakraTD.exceptions.ConfigurationException;
 import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 
+/**
+ * fetches the tests, starting in the given directory.
+ * for detecting the subdirectories und javascript test files, it relies
+ * on filename filters, created in the constructor.
+ * @author dominik
+ *
+ */
 public class TestFetcherGeneric implements TestFetcher {
 	private FilenameFilter dirFilter, jsFilter;
 	private File testDir;
@@ -28,6 +36,7 @@ public class TestFetcherGeneric implements TestFetcher {
 			@Override
 			public boolean accept(File dir, String name) {
 				String lcName = name.toLowerCase();
+				//TODO: make ends with configurable?
 				if(lcName.endsWith(".js")) {
 					return true;
 				} else {
@@ -40,16 +49,16 @@ public class TestFetcherGeneric implements TestFetcher {
 	}
 	
 	@Override
-	public List<TestGroup> fetch() {
+	public List<TestGroup> fetch() throws ConfigurationException {
 		return fetchFromDir(testDir.getAbsolutePath());
 	}
 	
-	public List<TestGroup> fetchFromDir(String chakraPath) {
+	public List<TestGroup> fetchFromDir(String chakraPath) throws ConfigurationException {
 		List<TestGroup> ltg = new LinkedList<TestGroup>();		
 		
 		File root = new File(chakraPath);
 		TestGroup tg = null;
-		//TODO: throw some exceptions if root can't be read, no tests found, ...
+		
 		if(root.canRead() && root.isDirectory()) {			
 			if(root.listFiles(jsFilter).length == 0) {
 				//NO js files in current directory, expecting to be in the main dir of the chakra tests
@@ -72,8 +81,10 @@ public class TestFetcherGeneric implements TestFetcher {
 					;
 				}
 			}
-		} //else throw new IOException("Provided Test-Dir can't be found or read!");
-//		ltg.sort(c);
+		} else {
+			throw new ConfigurationException("Provided Test-Dir can't be found or read!");
+		}
+
 		return ltg;
 	}
 	
@@ -100,20 +111,10 @@ public class TestFetcherGeneric implements TestFetcher {
 	}
 	
 	private boolean baselineExists(File f) {
-		StringBuilder baseLinePath = new StringBuilder (f.getPath().substring(0, f.getPath().length()-2));
-		baseLinePath.append("baseline");
-//		File baseline = new File(f.getPath().replace(".js", ".baseline"));
-		File baseline = new File(baseLinePath.toString());
-//		if(f.getName().contains("FailToSetLength")){
-//			int i = 1+f.getName().length();
-//			i=i+2;
-//			//debug jump in
-//		}
-		if(baseline.exists()) {
-			return true;
-		} else {
-			return false;
-		}
+		//TODO: if .js configurable, then it would have to be changed here too
+		File baseline = new File(f.getPath().replace(".js", ".baseline"));
+
+		return baseline.exists();
 	}
 
 }

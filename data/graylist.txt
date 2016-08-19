@@ -1,4 +1,4 @@
-#/Array/array_init.js
+/Array/array_init.js
 /Array/toString.js
 /Array/CopyOnAccessArray_cache_index_overflow.js
 /Array/bug945376SegLeftPlusSizeGreaterThanMaxArrayLen.js

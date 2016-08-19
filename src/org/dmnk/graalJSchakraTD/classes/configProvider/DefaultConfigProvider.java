@@ -26,6 +26,7 @@ public class DefaultConfigProvider implements ConfigurationProvider {
 	}
 	
 	private void setDefaults() {
+//		c.setExec(Configuration.ExecutableMode.INDIRECT, "jjs");
 		c.setExec(Configuration.ExecutableMode.DIRECT, "../../GraalVM-0.10/bin/js");
 		c.setTestsPath("../../GraalVM-0.10/chakraTests/test/");
 		c.addExport("html", "./data/htmlResult.html");

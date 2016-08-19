@@ -26,6 +26,12 @@ import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
 import org.dmnk.graalJSchakraTD.interfaces.TestExecutor;
 import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 
+/**
+ * standard {@link TestDriver} implementation, processing all the tests in sequence.
+ * all the other TestDriver implementations are extending this class, as just the process call is modified.
+ * @author dominik
+ *
+ */
 public class TestDriverGeneric implements TestDriver {
 	protected List<ResultExporter> resExp;
 	protected List<TestGroup> tests;
@@ -35,7 +41,7 @@ public class TestDriverGeneric implements TestDriver {
 	protected Configuration conf;
 	protected TestEvaluator tEval;
 	
-	public TestDriverGeneric(Configuration c, TestFetcher tf, ListFetcher lf, TestEvaluator te) {
+	public TestDriverGeneric(Configuration c, TestFetcher tf, ListFetcher lf, TestEvaluator te) throws ConfigurationException {
 		conf = c;
 		
 		resExp = new LinkedList<ResultExporter>();
@@ -50,10 +56,19 @@ public class TestDriverGeneric implements TestDriver {
 		resExp.add(re);
 	}
 	
-	private void setup(TestFetcher tf, ListFetcher lf) {
+	/**
+	 * uses the two fetchers to fill the black / white / graylist objects and adds the
+	 * configured {@link ResultExporter} classes
+	 * 
+	 * @param tf {@link TestFetcher}
+	 * @param lf {@link ListFetcher}
+	 * @throws ConfigurationException
+	 */
+	private void setup(TestFetcher tf, ListFetcher lf) throws ConfigurationException {
 		fetchTests(tf);
 		fetchLists(lf);
 		
+		//if config says the export is enabled, add it
 		if(conf.checkExport("html")) {
 			ResultExporter hre = new HTMLResultExporter(conf.getExport("html"));
 			addResultExporter(hre);
@@ -67,16 +82,18 @@ public class TestDriverGeneric implements TestDriver {
 	/**
 	 * get available tests from filesystem
 	 * @param tf
+	 * @throws ConfigurationException 
 	 */
-	private void fetchTests(TestFetcher tf) {
+	private void fetchTests(TestFetcher tf) throws ConfigurationException {
 		tests = tf.fetch(); //FromDir(this.getChakraPath());
 	}
 	
 	/**
 	 * process white/black/crashlists
 	 * @param lf
+	 * @throws javax.naming.ConfigurationException 
 	 */
-	private void fetchLists(ListFetcher lf) {
+	private void fetchLists(ListFetcher lf) throws ConfigurationException {
 		crashlist = lf.fetchFileList(conf.getGrayList());
 		
 		Helper.debugOut(conf, 1, "TR", crashlist.size()+"");
@@ -84,18 +101,18 @@ public class TestDriverGeneric implements TestDriver {
 			Helper.debugOut(conf, 1, "TR-entry", entry.getKey());
 		}
 		
-		try {
-			if(conf.getListMode() == ListMode.WHITE) {
-				folderList = lf.fetchFolderList(conf.getWhiteList());
-			} else {
-				folderList = lf.fetchFolderList(conf.getBlackList());
-			}
-		} catch (Exception e) {
-			//...
+		if(conf.getListMode() == ListMode.WHITE) {
+			folderList = lf.fetchFolderList(conf.getWhiteList());
+		} else {
+			folderList = lf.fetchFolderList(conf.getBlackList());
 		}
 	}
-	
 
+	/**
+	 * checks if the tests in the list are in the enabled / disabled group
+	 * and passes the enabled ones to the {@link TestExecutor}.
+	 * for evaluating the outcome of the test, the registered {@link TestEvaluator} is used
+	 */
 	public void process() throws TestException, ConfigurationException {		
 		//execute the enabled tests
 		for(TestGroup tg : tests) {			
@@ -139,9 +156,11 @@ public class TestDriverGeneric implements TestDriver {
  		}
 	}
 	
+	/**
+	 * calls each registered {@link ResultExporter} with the list of executed tests 
+	 */
 	@Override
 	public final void export() {
-		//export the result
 		for(ResultExporter te : resExp) {
 			te.export(executedTests);
 		}
