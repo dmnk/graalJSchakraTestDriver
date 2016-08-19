@@ -9,7 +9,8 @@ import org.dmnk.graalJSchakraTD.exceptions.ConfigurationException;
 import org.dmnk.graalJSchakraTD.interfaces.ConfigurationProvider;
 
 /**
- * parses the arguments provided at the CLI and returns a Configuration object  
+ * parses the arguments provided at the CLI and returns a Configuration object.
+ * implements {@link ConfigurationProvider}
  * <br><br>
  * of course it would be way better if the config would consist of
  * plugins, where each of those would register it's own help message

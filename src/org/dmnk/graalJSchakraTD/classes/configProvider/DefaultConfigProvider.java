@@ -6,6 +6,13 @@ import org.dmnk.graalJSchakraTD.classes.Configuration;
 import org.dmnk.graalJSchakraTD.exceptions.ConfigurationException;
 import org.dmnk.graalJSchakraTD.interfaces.ConfigurationProvider;
 
+/**
+ * provides the default configuration. settings are hardcoded in here.
+ * change so that it fits your needs!
+ * implements {@link ConfigurationProvider}
+ * @author dominik
+ *
+ */
 public class DefaultConfigProvider implements ConfigurationProvider {
 
 	private Configuration c;
