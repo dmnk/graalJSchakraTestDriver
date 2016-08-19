@@ -4,6 +4,13 @@ import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 
+/**
+ * extends the {@link GenericTest} and implements the {@link ExecutedTest} interface.
+ * contains in addition to the derived attributes a {@link TestOutput}.
+ * all tests that have been passed to the executable under test are instances of this class.
+ * @author Dominik
+ *
+ */
 public abstract class GenericExecutedTest extends GenericTest implements ExecutedTest {
 
 	protected TestOutput tOut;

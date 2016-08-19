@@ -6,6 +6,16 @@ import java.util.List;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 
+/**
+ * represents a folder in the test root directory. all the tests found
+ * by the {@link TestFetcher} during setup in such a folder
+ * are added to a group.
+ * 
+ * implements {@link TestGroup}
+ * 
+ * @author Dominik
+ *
+ */
 public class GenericTestGroup implements TestGroup {
 	protected List<Test> testList;
 	private String groupName;

@@ -5,6 +5,13 @@ import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 
+/**
+ * extends the {@link GenericExecutedTest} and implements the {@link FailedTest} interface, 
+ * therefore providing in addition a {@link FailReason} and (if test is of type baseline) also a
+ *  diff string in unified patch format.
+ * @author Dominik
+ *
+ */
 public class GenericFailedTest extends GenericExecutedTest implements FailedTest {
 	private FailReason failReason;
 	private String diff;

@@ -12,6 +12,14 @@ import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestEvaluator;
 
+/**
+ * contains all the logic that decides about how a {@link TestOutput} in combination with a
+ * {@link Test}`s {@link TestType} is rated. The {@link FailType} of the returned {@link FailedTest} is set
+ * according to that. Otherwise a {@link PassedTest} is returned.
+ * 
+ * @author Dominik
+ *
+ */
 public class GenericTestEvaluator implements TestEvaluator {
 	
 	@Override
@@ -39,7 +47,9 @@ public class GenericTestEvaluator implements TestEvaluator {
 					return Helper.simpleBaselineCompare(new File(t.getBaseline()), to.getStdOut());
 				} catch (IOException e) {
 					e.printStackTrace();
-					System.err.println("TT: baseline file not found: "+t.getBaseline());
+					//Shouldn't be possible, as it's just a baseline test if it was found by the TestFetcher beforehand.
+					// chance that the file was deleted during the execution?
+					System.err.println("TEval: baseline file not found: "+t.getBaseline());
 					return false;
 				}
 			case PASSSTRING:
@@ -57,13 +67,6 @@ public class GenericTestEvaluator implements TestEvaluator {
 	
 	@Override
 	public ExecutedTest determineTestResult(Test t, TestOutput to) {
-		//merge baseline and testfile
-//		File mf = new File(t.getFilename());
-		
-		//execute with graal
-//		TestOutput to = executeGraalJS(mf);
-		
-		//decide, based on TestOutput.rc, erroroutput and stdout if and why and where it failed
 		if(passed(t, to)) {
 			PassedTest pt = new GenericPassedTest(t, to);
 			return pt;

@@ -5,6 +5,12 @@ import java.io.File;
 import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 
+/**
+ * the root implementation of the {@link Test} interface, all the other classes extend this one
+ * contains just the filename and the {@link TestType}
+ * @author Dominik
+ *
+ */
 public class GenericTest implements Test {
 	private File testFile;
 	private TestType testType;

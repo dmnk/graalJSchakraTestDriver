@@ -9,6 +9,13 @@ import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
 
+/**
+ * extends the {@link GenericTestGroup} by implementing the {@link TestExecutedGroup} interface.
+ * updates its statistic about amount of tests by failtype / pass on the fly when adding a new test.
+ * 
+ * @author Dominik
+ *
+ */
 public class GenericTestExecutedGroup extends GenericTestGroup implements TestExecutedGroup {
 	private int passed =0, failed=0, warn=0, exception=0, crash=0, assertion=0, excluded=0, output=0;
 	
