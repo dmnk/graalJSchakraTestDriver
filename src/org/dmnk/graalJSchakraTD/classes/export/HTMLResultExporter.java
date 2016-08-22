@@ -17,6 +17,12 @@ import org.dmnk.graalJSchakraTD.interfaces.ResultExporter;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
 
+/**
+ * exports the executed test groups as single html file, styled with bootstrap and prism.js
+ * @deprecated switch to a template engine like {@link http://freemarker.org}
+ * @author dominik
+ *
+ */
 public class HTMLResultExporter implements ResultExporter {
 	private String exportPath;
 	private StringBuilder exportHTML;
@@ -69,10 +75,11 @@ public class HTMLResultExporter implements ResultExporter {
         +"<h4 class=\"panel-title\">%%GROUPNAME%%</h4>"
         +"<div class=\"well-sm\">"
         +"<div class=\"progress\">"
-        	+"<div class=\"progress-bar progress-bar-success\" role=\"progressbar\" aria-valuenow=\"%%PCT_PASSED%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_PASSED%%%;\"> %%PCT_PASSED%%%</div>"
-	        +"<div class=\"progress-bar progress-bar-danger\" role=\"progressbar\" aria-valuenow=\"%%PCT_RED%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_RED%%%;\"> %%PCT_RED%%%</div>"
-	        +"<div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"%%PCT_BLUE%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_BLUE%%%;\"> %%PCT_BLUE%%%</div>"
-	        +"<div class=\"progress-bar progress-bar-warning\" role=\"progressbar\" aria-valuenow=\"%%PCT_ORANGE%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_ORANGE%%%;\"> %%PCT_ORANGE%%%</div>"
+        	+"<div class=\"progress-bar progress-bar-success\" role=\"progressbar\" aria-valuenow=\"%%PCT_PASSED%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_PASSED%%%;\"><abbr title=\"passed\">%%PCT_PASSED%%%</abbr></div>"
+	        +"<div class=\"progress-bar progress-bar-danger\" role=\"progressbar\" aria-valuenow=\"%%PCT_RED%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_RED%%%;\"><abbr title=\"exception\">%%PCT_RED%%%</abbr></div>"
+	        +"<div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"%%PCT_BLUE%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_BLUE%%%;\"><abbr title=\"error\">%%PCT_BLUE%%%</abbr></div>"
+	        +"<div class=\"progress-bar progress-bar-warning\" role=\"progressbar\" aria-valuenow=\"%%PCT_ORANGE%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_ORANGE%%%;\"><abbr title=\"output\">%%PCT_ORANGE%%%</abbr></div>"
+	        +"<div class=\"progress-bar progress-bar-active\" role=\"progressbar\" aria-valuenow=\"%%PCT_ACTIVE%%\" aria-valuemin=\"0\" aria-valuemax=\"%%PCT_TOTAL%%\" style=\"/*min-width: 2em;*/ width: %%PCT_ACTIVE%%%; background-image: linear-gradient(to bottom,#909090 0,#000 100%);\"><abbr title=\"crash/timeout\"> %%PCT_ACTIVE%%%</abbr></div>"
           +"</div>"
 	      +"</div>"
 	      +"</a>"
@@ -133,9 +140,9 @@ public class HTMLResultExporter implements ResultExporter {
 			+"<div class=\"panel-heading\">\n"
 			+"<h4 class=\"panel-title\">\n"
 			+"<a data-toggle=\"collapse\" href=\"#collapse%%TEST_ID%%_op\">%%FILE_NAME%%</a>\n" //TODO: correct the href
-			+"<a href=\"%%FILE_LOCATION%%\" target=\"_blank\">\n"
+			/*+"<a href=\"%%FILE_LOCATION%%\" target=\"_blank\">\n"
 			+"<span class=\"glyphicon glyphicon-open-file\"></span>\n"
-			+"</a>\n"
+			+"</a>\n"*/
 			+"</h4>\n"
 			+"</div>\n"
 			+"<div id=\"collapse%%TEST_ID%%_op\" class=\"panel-collapse collapse\">\n" //TODO: same id as href above
@@ -199,8 +206,9 @@ public class HTMLResultExporter implements ResultExporter {
 	private final String pctOrange = "%%PCT_ORANGE%%";
 	private final String pctRed = "%%PCT_RED%%";
 //	private final String pctOrange = "%%PCT_ASSERTION%%";
-	private final String pctBlue = "%%PCT_BLUE%%";
+	private final String pctBlue = "%%PCT_BLUE%%"; 
 	private final String pctTotal = "%%PCT_TOTAL%%";
+	private final String pctActive = "%%PCT_ACTIVE%%"; //GRAYish
 	
 	private Map<String, String> statusClass;
 	
@@ -211,9 +219,8 @@ public class HTMLResultExporter implements ResultExporter {
 		statusClass = new HashMap<String, String>();
 		statusClass.put("passed", "success");
 		statusClass.put("excluded", "default text-muted");
-		statusClass.put(FailReason.WARNING.toString(), "info");
-		statusClass.put(FailReason.CRASH.toString(), "danger");
-		statusClass.put(FailReason.ASSERTION.toString(), "warning");
+		statusClass.put(FailReason.CRASH.toString(), "active");
+		statusClass.put(FailReason.ERROR.toString(), "info");
 		statusClass.put(FailReason.EXCEPTION.toString(), "danger");
 		statusClass.put(FailReason.OUTPUT.toString(), "warning");
 	}
@@ -257,8 +264,7 @@ public class HTMLResultExporter implements ResultExporter {
 		Float pctPassed = (float)(tg.getPassed())*100/tg.getTotal();
 		Float pctCrash = (float)tg.getCrashed()*100/tg.getTotal();
 		Float pctException = (float)tg.getException()*100/tg.getTotal();
-		Float pctWarning = (float)tg.getWarnings()*100/tg.getTotal();
-		Float pctAssert = (float)tg.getAssert()*100/tg.getTotal();
+		Float pctError = (float)tg.getError()*100/tg.getTotal();
 		Float pctOutput = (float)tg.getOutput()*100/tg.getTotal();
 		
 		tempGroupHeader = tempGroupHeader.replaceAll(this.phTestGroup, tg.getGroupName());
@@ -266,10 +272,10 @@ public class HTMLResultExporter implements ResultExporter {
 		tempGroupHeader = tempGroupHeader.replaceAll(this.pctTotal, ""+tg.getTotal());
 		tempGroupHeader = tempGroupHeader.replaceAll(this.pctGreen, 	df.format(pctPassed));
 //		crash & exception
-		tempGroupHeader = tempGroupHeader.replaceAll(this.pctRed, 		df.format(pctCrash + pctException));
-		tempGroupHeader = tempGroupHeader.replaceAll(this.pctOrange, 	df.format(pctOutput + pctAssert ));
-		tempGroupHeader = tempGroupHeader.replaceAll(this.pctBlue, 		df.format(pctWarning));
-//		tempGroupHeader = tempGroupHeader.replaceAll(this.pctInfo, replacement)
+		tempGroupHeader = tempGroupHeader.replaceAll(this.pctRed, 		df.format(pctException));
+		tempGroupHeader = tempGroupHeader.replaceAll(this.pctOrange, 	df.format(pctOutput));
+		tempGroupHeader = tempGroupHeader.replaceAll(this.pctBlue, 		df.format(pctError));
+		tempGroupHeader = tempGroupHeader.replaceAll(this.pctActive,	df.format(pctCrash));
 		this.exportHTML.append(tempGroupHeader);
 	}
 	

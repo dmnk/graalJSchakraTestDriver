@@ -12,6 +12,13 @@ import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
 
+/**
+ * very simple export of the results into a csv format
+ * implements {@link ResultExporter}
+ * 
+ * @author dominik
+ *
+ */
 public class TextResultExporter implements ResultExporter {
 	private String exportPath;
 	private StringBuilder exportTXT;
