@@ -4,6 +4,11 @@ import java.util.List;
 
 import org.dmnk.graalJSchakraTD.exceptions.TestException;
 
+/**
+ * all tests are hold either by a TestGroup, or the extending TestExecutedGroup.
+ * @author dominik
+ *
+ */
 public interface TestGroup {
 
 	public String getGroupName ();

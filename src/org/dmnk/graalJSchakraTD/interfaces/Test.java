@@ -2,6 +2,12 @@ package org.dmnk.graalJSchakraTD.interfaces;
 
 import org.dmnk.graalJSchakraTD.enums.TestType;
 
+/**
+ * the base-case for all tests.
+ * 
+ * @author dominik
+ *
+ */
 public interface Test {
 	
 	public String getFilename();
