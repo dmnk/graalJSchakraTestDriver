@@ -8,16 +8,14 @@ public interface TestExecutedGroup extends TestGroup {
 
 	int getFailed();
 
-	int getWarnings();
-
 	int getException();
 
 	int getExcluded();
 
 	int getCrashed();
 
-	int getAssert();
-
 	int getTotal();
+
+	int getError();
 
 }

@@ -10,6 +10,7 @@ import org.dmnk.graalJSchakraTD.classes.test.GenericTest;
 import org.dmnk.graalJSchakraTD.classes.test.GenericTestGroup;
 import org.dmnk.graalJSchakraTD.enums.TestType;
 import org.dmnk.graalJSchakraTD.exceptions.ConfigurationException;
+import org.dmnk.graalJSchakraTD.exceptions.TestException;
 import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 
@@ -49,11 +50,11 @@ public class TestFetcherGeneric implements TestFetcher {
 	}
 	
 	@Override
-	public List<TestGroup> fetch() throws ConfigurationException {
+	public List<TestGroup> fetch() throws ConfigurationException, TestException {
 		return fetchFromDir(testDir.getAbsolutePath());
 	}
 	
-	public List<TestGroup> fetchFromDir(String chakraPath) throws ConfigurationException {
+	public List<TestGroup> fetchFromDir(String chakraPath) throws ConfigurationException, TestException {
 		List<TestGroup> ltg = new LinkedList<TestGroup>();		
 		
 		File root = new File(chakraPath);
@@ -88,7 +89,7 @@ public class TestFetcherGeneric implements TestFetcher {
 		return ltg;
 	}
 	
-	private TestGroup addJSofFolder(File directory) throws IOException {
+	private TestGroup addJSofFolder(File directory) throws IOException, TestException {
 		TestGroup tg = null;
 		
 		if(!directory.isDirectory()) {

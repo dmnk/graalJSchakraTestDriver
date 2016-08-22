@@ -3,6 +3,7 @@ package org.dmnk.graalJSchakraTD.classes.test;
 import java.util.LinkedList;
 
 import org.dmnk.graalJSchakraTD.classes.test.GenericTestGroup;
+import org.dmnk.graalJSchakraTD.exceptions.TestException;
 import org.dmnk.graalJSchakraTD.interfaces.ExecutedTest;
 import org.dmnk.graalJSchakraTD.interfaces.FailedTest;
 import org.dmnk.graalJSchakraTD.interfaces.PassedTest;
@@ -17,7 +18,7 @@ import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
  *
  */
 public class GenericTestExecutedGroup extends GenericTestGroup implements TestExecutedGroup {
-	private int passed =0, failed=0, warn=0, exception=0, crash=0, assertion=0, excluded=0, output=0;
+	private int passed =0, failed=0, exception=0, crash=0, error=0, excluded=0, output=0;
 	
 	public GenericTestExecutedGroup (String name) {
 		super(name);
@@ -25,7 +26,7 @@ public class GenericTestExecutedGroup extends GenericTestGroup implements TestEx
 	}
 
 	@Override
-	public void addTest(Test test)  {
+	public void addTest(Test test) throws TestException  {
 		super.addTest(test);
 		
 		if(test instanceof ExecutedTest) {
@@ -36,8 +37,8 @@ public class GenericTestExecutedGroup extends GenericTestGroup implements TestEx
 				failed++;
 				
 				switch (ft.getFailReason()) {
-				case ASSERTION:
-					assertion ++;
+				case ERROR:
+					error ++;
 					break;
 				case CRASH:
 					crash++;
@@ -45,18 +46,14 @@ public class GenericTestExecutedGroup extends GenericTestGroup implements TestEx
 				case EXCEPTION:
 					exception++;
 					break;
-				case WARNING:
-					warn++;
-					break;
 				case OUTPUT:
 					output++;
 					break;
 				default:
-					System.err.println("who invented a new failreason and didn't update the statistics in TestExecutedGroup?");
-					//TODO: exception instead of error
+					throw new TestException("who invented a new failreason and didn't update the statistics in TestExecutedGroup?");
 				}
 			} else {
-				System.err.println("generic-test-executor: a test of type executed but neither failed nor passed, how could that happen?");
+				throw new TestException("generic-test-executor: a test of type executed but neither failed nor passed, how could that happen?");
 			}
 		} else {
 			excluded++;
@@ -74,10 +71,6 @@ public class GenericTestExecutedGroup extends GenericTestGroup implements TestEx
 		return this.failed;
 	}
 
-	@Override
-	public int getWarnings() {
-		return this.warn;
-	}
 
 	@Override
 	public int getException() {
@@ -95,8 +88,8 @@ public class GenericTestExecutedGroup extends GenericTestGroup implements TestEx
 	}
 
 	@Override
-	public int getAssert() {
-		return this.assertion;
+	public int getError() {
+		return this.error;
 	}
 
 	@Override

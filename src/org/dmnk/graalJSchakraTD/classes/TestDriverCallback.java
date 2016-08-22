@@ -34,7 +34,7 @@ public class TestDriverCallback extends TestDriverGeneric {
 	final private Object lock;
 	private AtomicInteger countDownLatch;
 	
-	public TestDriverCallback (Configuration c, TestFetcher tf, ListFetcher lf, TestEvaluator te) throws ConfigurationException {
+	public TestDriverCallback (Configuration c, TestFetcher tf, ListFetcher lf, TestEvaluator te) throws ConfigurationException, TestException {
 		super(c, tf, lf, te);
 		
 		lock = new Object();

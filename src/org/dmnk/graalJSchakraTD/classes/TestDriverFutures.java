@@ -33,7 +33,7 @@ import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 public class TestDriverFutures extends TestDriverGeneric {
 	private ExecutorService e;
 	
-	public TestDriverFutures(Configuration c, TestFetcher tf, ListFetcher lf, TestEvaluator te) throws ConfigurationException {
+	public TestDriverFutures(Configuration c, TestFetcher tf, ListFetcher lf, TestEvaluator te) throws ConfigurationException, TestException {
 		super(c, tf, lf, te);
 
 		e = Executors.newFixedThreadPool(c.getMaxThreads());

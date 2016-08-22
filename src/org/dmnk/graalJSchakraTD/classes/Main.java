@@ -63,6 +63,10 @@ public class Main {
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 			System.exit(-2);
+		} catch (TestException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+			System.exit(-3);
 		}
 	}
 	

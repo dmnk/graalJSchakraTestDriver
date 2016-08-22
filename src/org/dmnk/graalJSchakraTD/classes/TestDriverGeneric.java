@@ -41,7 +41,7 @@ public class TestDriverGeneric implements TestDriver {
 	protected Configuration conf;
 	protected TestEvaluator tEval;
 	
-	public TestDriverGeneric(Configuration c, TestFetcher tf, ListFetcher lf, TestEvaluator te) throws ConfigurationException {
+	public TestDriverGeneric(Configuration c, TestFetcher tf, ListFetcher lf, TestEvaluator te) throws ConfigurationException, TestException {
 		conf = c;
 		
 		resExp = new LinkedList<ResultExporter>();
@@ -63,8 +63,9 @@ public class TestDriverGeneric implements TestDriver {
 	 * @param tf {@link TestFetcher}
 	 * @param lf {@link ListFetcher}
 	 * @throws ConfigurationException
+	 * @throws TestException 
 	 */
-	private void setup(TestFetcher tf, ListFetcher lf) throws ConfigurationException {
+	private void setup(TestFetcher tf, ListFetcher lf) throws ConfigurationException, TestException {
 		fetchTests(tf);
 		fetchLists(lf);
 		
@@ -83,8 +84,9 @@ public class TestDriverGeneric implements TestDriver {
 	 * get available tests from filesystem
 	 * @param tf
 	 * @throws ConfigurationException 
+	 * @throws TestException 
 	 */
-	private void fetchTests(TestFetcher tf) throws ConfigurationException {
+	private void fetchTests(TestFetcher tf) throws ConfigurationException, TestException {
 		tests = tf.fetch(); //FromDir(this.getChakraPath());
 	}
 	

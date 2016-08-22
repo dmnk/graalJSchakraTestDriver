@@ -3,6 +3,7 @@ package org.dmnk.graalJSchakraTD.classes.test;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.dmnk.graalJSchakraTD.exceptions.TestException;
 import org.dmnk.graalJSchakraTD.interfaces.Test;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 
@@ -36,7 +37,7 @@ public class GenericTestGroup implements TestGroup {
 	}
 
 	@Override
-	public void addTest(Test test) {
+	public void addTest(Test test) throws TestException {
 		testList.add(test);
 	}
 
