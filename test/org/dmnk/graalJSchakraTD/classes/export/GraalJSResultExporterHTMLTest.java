@@ -13,6 +13,7 @@ import org.dmnk.graalJSchakraTD.classes.test.GenericTest;
 import org.dmnk.graalJSchakraTD.classes.test.GenericTestExecutedGroup;
 import org.dmnk.graalJSchakraTD.enums.FailReason;
 import org.dmnk.graalJSchakraTD.enums.TestType;
+import org.dmnk.graalJSchakraTD.exceptions.TestException;
 import org.dmnk.graalJSchakraTD.interfaces.TestExecutedGroup;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class GraalJSResultExporterHTMLTest {
 	}
 
 	@Test
-	public void testSetExportPath() {
+	public void testSetExportPath() throws TestException {
 		hre.setExportPath("./data/htmlExportJUnitTest.html");
 		List<TestExecutedGroup> ltg = new LinkedList<TestExecutedGroup>();
 		TestExecutedGroup tg = new GenericTestExecutedGroup("The Test Group");
@@ -42,7 +43,7 @@ public class GraalJSResultExporterHTMLTest {
 	}
 
 	@Test
-	public void testExport() {
+	public void testExport() throws TestException {
 		hre.setExportPath("./data/htmlExportJUnitTest2.html");
 		List<TestExecutedGroup> ltg = new LinkedList<TestExecutedGroup>();
 		TestExecutedGroup tg = new GenericTestExecutedGroup("The Test Group");
@@ -50,11 +51,11 @@ public class GraalJSResultExporterHTMLTest {
 		org.dmnk.graalJSchakraTD.interfaces.Test tEx = new GenericTest("arr_bailout.js", TestType.BASELINE);
 		org.dmnk.graalJSchakraTD.interfaces.Test t = new GenericTest("arr_bailout.js", TestType.BASELINE);
 		org.dmnk.graalJSchakraTD.interfaces.Test tPassed = new GenericPassedTest(t,0, "Passed");
-		org.dmnk.graalJSchakraTD.interfaces.Test tFailedAssert = new GenericFailedTest(t,0, "Passed", FailReason.ASSERTION);
+		org.dmnk.graalJSchakraTD.interfaces.Test tFailedAssert = new GenericFailedTest(t,0, "Passed", FailReason.ERROR);
 		org.dmnk.graalJSchakraTD.interfaces.Test tFailedOutput = new GenericFailedTest(t,0, "Passed", FailReason.OUTPUT);
 		org.dmnk.graalJSchakraTD.interfaces.Test tFailedCrash = new GenericFailedTest(t,0, "Passed", FailReason.CRASH);
 		org.dmnk.graalJSchakraTD.interfaces.Test tFailedExc = new GenericFailedTest(t,0, "Passed", FailReason.EXCEPTION);
-		org.dmnk.graalJSchakraTD.interfaces.Test tFailedWarn = new GenericFailedTest(t,0, "Passed", FailReason.WARNING);
+//		org.dmnk.graalJSchakraTD.interfaces.Test tFailedWarn = new GenericFailedTest(t,0, "Passed", FailReason.WARNING);
 		
 		tg.addTest(tEx);
 //		tg.addTest(t);
@@ -63,7 +64,7 @@ public class GraalJSResultExporterHTMLTest {
 		tg.addTest(tFailedCrash);
 		tg.addTest(tFailedOutput);
 		tg.addTest(tFailedExc);
-		tg.addTest(tFailedWarn);
+//		tg.addTest(tFailedWarn);
 		
 		ltg.add(tg);
 		

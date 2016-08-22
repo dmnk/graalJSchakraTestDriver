@@ -8,6 +8,8 @@ import org.dmnk.graalJSchakraTD.classes.TestDriverGeneric;
 import org.dmnk.graalJSchakraTD.classes.export.HTMLResultExporter;
 import org.dmnk.graalJSchakraTD.classes.export.TextResultExporter;
 import org.dmnk.graalJSchakraTD.classes.test.GenericTestEvaluator;
+import org.dmnk.graalJSchakraTD.exceptions.ConfigurationException;
+import org.dmnk.graalJSchakraTD.exceptions.TestException;
 import org.dmnk.graalJSchakraTD.interfaces.ListFetcher;
 import org.dmnk.graalJSchakraTD.interfaces.ResultExporter;
 import org.dmnk.graalJSchakraTD.interfaces.TestDriver;
@@ -24,7 +26,7 @@ public class GraalJSIntegrationTest {
 	}
 
 	@Test
-	public void smokeTest() {
+	public void smokeTest() throws ConfigurationException, TestException {
 		Configuration c = new Configuration();
 		TestFetcher tf = new TestFetcherGeneric(c.getTestsPath());
 		ListFetcher lf = new ListFetcherGeneric(c);

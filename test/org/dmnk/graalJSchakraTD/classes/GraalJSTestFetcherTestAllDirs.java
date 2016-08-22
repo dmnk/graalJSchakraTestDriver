@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import java.util.List;
 
 import org.dmnk.graalJSchakraTD.classes.TestFetcherGeneric;
+import org.dmnk.graalJSchakraTD.exceptions.ConfigurationException;
+import org.dmnk.graalJSchakraTD.exceptions.TestException;
 import org.dmnk.graalJSchakraTD.interfaces.TestFetcher;
 import org.dmnk.graalJSchakraTD.interfaces.TestGroup;
 import org.junit.Before;
@@ -14,7 +16,7 @@ public class GraalJSTestFetcherTestAllDirs {
 	private List<TestGroup> tg;
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws ConfigurationException, TestException {
 		TestFetcher gjtf = new TestFetcherGeneric("../../GraalVM-0.10/chakraTests/test/");
 		tg = gjtf.fetch(); //FromDir("../../GraalVM-0.10/chakraTests/test/");
 	}
