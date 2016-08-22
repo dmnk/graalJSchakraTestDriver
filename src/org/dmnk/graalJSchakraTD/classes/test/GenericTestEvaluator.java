@@ -24,14 +24,11 @@ public class GenericTestEvaluator implements TestEvaluator {
 	
 	@Override
 	public FailReason evaluate(Test t, TestOutput to) {
-		if(to.getErrOut().contains("Assert") || to.getStdOut().contains("Assert")) return FailReason.ASSERTION;
+		if(to.getErrOut().contains("Error") /* || to.getStdOut().contains("Error") */) return FailReason.ERROR;
+		if(to.getReturnCode() < 0) return FailReason.CRASH;
 		if(to.getErrOut().length()>0) return FailReason.EXCEPTION;
 		
-		if(!to.getErrOut().isEmpty()) return FailReason.WARNING;
-		
 		return FailReason.OUTPUT;
-		//if execution aborted:
-//			return FailReason.CRASH;
 	}
 	
 	@Override
